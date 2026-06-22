@@ -223,6 +223,29 @@ export function initSiteUI() {
     }
   });
 
+  // Nav submenu — click to open/close, click outside to close.
+  const allSubmenuItems = document.querySelectorAll(".site-nav__item--has-submenu");
+
+  allSubmenuItems.forEach((item) => {
+    const trigger = item.querySelector(".site-nav__link");
+    if (!trigger) return;
+
+    trigger.addEventListener("click", (e) => {
+      const isOpen = item.classList.contains("is-open");
+      // Close all
+      allSubmenuItems.forEach((other) => other.classList.remove("is-open"));
+      // Toggle this one
+      if (!isOpen) {
+        item.classList.add("is-open");
+        e.stopPropagation();
+      }
+    });
+  });
+
+  document.addEventListener("click", () => {
+    allSubmenuItems.forEach((item) => item.classList.remove("is-open"));
+  });
+
   if (mobileMenu) {
     const desktopItems = document.querySelectorAll(".site-nav .site-nav__item");
     const mobileNav = mobileMenu.querySelector(".mobile-menu__nav");
@@ -308,15 +331,22 @@ export function initSiteUI() {
       return;
     }
 
+    let scrollSettleTimer = null;
+
     const updateCategoryArrows = () => {
       const maxScrollLeft = rail.scrollWidth - rail.clientWidth;
-      const canScrollLeft = rail.scrollLeft > 8;
+      const canScrollLeft = rail.scrollLeft > 2;
+      const canScrollRight = maxScrollLeft > 2 && rail.scrollLeft < maxScrollLeft - 2;
 
       wrap.classList.toggle("has-prev", canScrollLeft);
 
-      if (prevButton) {
-        prevButton.hidden = !canScrollLeft;
-      }
+      if (prevButton) prevButton.hidden = !canScrollLeft;
+      if (nextButton) nextButton.hidden = !canScrollRight;
+    };
+
+    const scheduleUpdate = () => {
+      clearTimeout(scrollSettleTimer);
+      scrollSettleTimer = setTimeout(updateCategoryArrows, 300);
     };
 
     prevButton?.addEventListener("click", () => {
@@ -324,22 +354,21 @@ export function initSiteUI() {
         left: Math.max(0, rail.scrollLeft - rail.clientWidth * 0.72),
         behavior: "smooth",
       });
+      scheduleUpdate();
     });
 
     nextButton?.addEventListener("click", () => {
       const maxScrollLeft = rail.scrollWidth - rail.clientWidth;
-      const isAtEnd = rail.scrollLeft >= maxScrollLeft - 8;
-      const nextLeft = isAtEnd ? 0 : Math.min(rail.scrollLeft + rail.clientWidth * 0.72, maxScrollLeft);
-
       rail.scrollTo({
-        left: nextLeft,
+        left: Math.min(rail.scrollLeft + rail.clientWidth * 0.72, maxScrollLeft),
         behavior: "smooth",
       });
+      scheduleUpdate();
     });
 
     rail.addEventListener("scroll", updateCategoryArrows, { passive: true });
     window.addEventListener("resize", updateCategoryArrows);
-    updateCategoryArrows();
+    requestAnimationFrame(updateCategoryArrows);
   });
 
   accordionTriggers.forEach((trigger) => {
@@ -531,7 +560,7 @@ export function initSiteUI() {
       isPaused = false;
     });
 
-    if (!prefersReducedMotion) {
+    if (!prefersReducedMotion && !carousel.hasAttribute("data-no-autoscroll")) {
       frameId = window.requestAnimationFrame(tick);
     }
 
@@ -874,6 +903,35 @@ export function initSiteUI() {
         closeSelect();
       }
     });
+
+    // URL parameter sync — opt-in via data-url-param on the hidden input
+    const urlParam = valueInput.getAttribute("data-url-param");
+    if (urlParam) {
+      const initialValue = new URLSearchParams(location.search).get(urlParam);
+      if (initialValue) {
+        const matchingOption = [...options].find((o) => o.getAttribute("data-value") === initialValue);
+        if (matchingOption) {
+          options.forEach((o) => o.setAttribute("aria-selected", "false"));
+          matchingOption.setAttribute("aria-selected", "true");
+          label.textContent = matchingOption.textContent.trim();
+          valueInput.value = initialValue;
+        }
+      }
+
+      options.forEach((option) => {
+        option.addEventListener("click", () => {
+          const value = option.getAttribute("data-value") ?? "";
+          const params = new URLSearchParams(location.search);
+          if (value && value !== "all") {
+            params.set(urlParam, value);
+          } else {
+            params.delete(urlParam);
+          }
+          const qs = params.toString();
+          history.replaceState(null, "", location.pathname + (qs ? "?" + qs : ""));
+        });
+      });
+    }
   });
 
   toggleChecks.forEach((toggle) => {
@@ -1191,4 +1249,36 @@ export function initSiteUI() {
   } else {
     revealTargets.forEach((target) => target.classList.add("is-visible"));
   }
+
+  // Living card hover video
+  const hoverVideoSrc = window.__livingCardHoverVideo;
+  if (hoverVideoSrc) {
+    document.querySelectorAll(".living-card").forEach((card) => {
+      if (card.closest("[data-no-card-video]")) return;
+      const img = card.querySelector(":scope > img");
+      if (!img) return;
+
+      const video = document.createElement("video");
+      video.src = hoverVideoSrc;
+      video.loop = true;
+      video.muted = true;
+      video.playsInline = true;
+      video.className = "living-card__hover-video";
+      video.style.display = "none";
+      img.after(video);
+
+      card.addEventListener("mouseenter", () => {
+        img.style.display = "none";
+        video.style.display = "block";
+        video.play();
+      });
+
+      card.addEventListener("mouseleave", () => {
+        video.pause();
+        video.style.display = "none";
+        img.style.display = "";
+      });
+    });
+  }
+
 }

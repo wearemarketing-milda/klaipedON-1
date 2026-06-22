@@ -22,7 +22,6 @@
           <a class="site-logo" href="/" aria-label="KlaipėdON">
             <img data-asset="logo-header" alt="KlaipėdON" />
           </a>
-
           <button
             type="button"
             class="menu-toggle"
@@ -35,7 +34,6 @@
             <span></span>
             <span></span>
           </button>
-
           <nav class="site-nav" aria-label="Pagrindinė navigacija">
             <div class="site-nav__item">
               <a class="site-nav__link" href="/renginiai/">Renginiai</a>
@@ -47,7 +45,6 @@
                 <a href="/praneskite-apie-rengini/">Pranešk apie renginį</a>
               </div>
             </div>
-
             <div class="site-nav__item">
               <a class="site-nav__link" href="/#atrask" aria-current="page">Atrask</a>
               <div class="site-nav__submenu">
@@ -58,16 +55,50 @@
                 <a href="/naujienos/" aria-current="page">Naujienos</a>
               </div>
             </div>
-
-            <div class="site-nav__item">
-              <a class="site-nav__link" href="/gyvenk/">Gyvenk</a>
-              <div class="site-nav__submenu">
-                <a href="/gyvenk/">Apgyvendinimas</a>
-                <a href="/gyvenk/kur-pavalgyti/">Kur pavalgyti</a>
-                <a href="/gyvenk/kaip-atvykti/">Kaip atvykti</a>
+            <div class="site-nav__item site-nav__item--mega site-nav__item--has-submenu">
+              <span class="site-nav__link">Gyvenk</span>
+              <div class="site-nav__submenu site-nav__mega-menu" role="region" aria-label="Gyvenk navigacija">
+                <div class="site-nav__mega-menu-inner">
+                  <div class="site-nav__mega-grid">
+                    <div class="site-nav__mega-col">
+                      <p class="site-nav__mega-col-title">Šeimai</p>
+                      <ul class="site-nav__mega-list">
+                        <li><a href="/seimai/">Apie gyvenimą Klaipėdoje</a></li>
+                        <li><a href="/seimai/#gyvenamieji-rajonai">Gyvenamieji rajonai</a></li>
+                        <li><a href="/gyvenk/svietimo-istaigos/">Švietimo įstaigos</a></li>
+                        <li><a href="/ka-veikti-laisvalaikiu/">Laisvalaikis</a></li>
+                      </ul>
+                    </div>
+                    <div class="site-nav__mega-col">
+                      <p class="site-nav__mega-col-title">Jaunimui</p>
+                      <ul class="site-nav__mega-list">
+                        <li><a href="/jaunimui/">Apie gyvenimą Klaipėdoje</a></li>
+                        <li><a href="/jaunimui/#jaunimo-erdves">Jaunimo erdvės</a></li>
+                        <li><a href="/gyvenk/studijuok/">Studijuok</a></li>
+                        <li><a href="/ka-veikti-laisvalaikiu/?auditorija=jaunimui">Laisvalaikis</a></li>
+                      </ul>
+                    </div>
+                    <div class="site-nav__mega-col">
+                      <p class="site-nav__mega-col-title">Talentui</p>
+                      <ul class="site-nav__mega-list">
+                        <li><a href="/talentui/">Apie gyvenimą Klaipėdoje</a></li>
+                        <li><a href="/talentui/#kufa">KUFA mentorystės programa</a></li>
+                        <li><a href="/talentui/#spiecius">Spiečius</a></li>
+                        <li><a href="/talentui/#paskatos">Paskatos</a></li>
+                        <li><a href="/talentui/#prioritetiniai-sektoriai">Prioritetiniai sektoriai</a></li>
+                        <li><a href="/ka-veikti-laisvalaikiu/">Laisvalaikis</a></li>
+                      </ul>
+                    </div>
+                    <div class="site-nav__mega-col site-nav__mega-col--cta">
+                      <a class="site-nav__mega-cta" href="/ka-veikti-laisvalaikiu/">
+                        <img data-asset="nav-gyvenk-cta" alt="" />
+                        <span>Ką veikti laisvalaikiu? <i data-lucide="arrow-right"></i></span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-
             <div class="site-nav__item">
               <a class="site-nav__link" href="/#investuok">Investuok ir dirbk</a>
               <div class="site-nav__submenu">
@@ -76,12 +107,10 @@
                 <a href="/investuok-ir-dirbk/karjera/">Karjera</a>
               </div>
             </div>
-
             <div class="site-nav__item">
               <a class="site-nav__link" href="/apie/">Apie</a>
             </div>
           </nav>
-
           <div class="site-header__tools" aria-label="Naudotojo veiksmai">
             <div class="site-header__icons" aria-hidden="true">
               <i data-lucide="search"></i>
@@ -91,7 +120,6 @@
             <a class="site-lang" href="/" lang="en">EN</a>
           </div>
         </div>
-
         <div id="mobile-menu" class="mobile-menu" data-mobile-menu>
           <nav class="mobile-menu__nav" aria-label="Mobilioji navigacija">
             <a href="/renginiai/">Renginiai</a>
@@ -107,7 +135,6 @@
           </nav>
         </div>
       </header>
-
       <main>
         <section class="news-hero" data-wp-partial="template-parts/news/archive-hero.php">
           <div class="news-hero__media" aria-hidden="true">
@@ -119,9 +146,26 @@
             <h1 data-acf-field="news_archive_title">Kas naujo?</h1>
           </div>
         </section>
-
         <section class="news-archive" data-wp-partial="template-parts/news/archive-list.php">
           <div class="news-archive__inner">
+            <div class="event-categories-wrap">
+              <button type="button" class="event-categories__prev" aria-label="Rodyti ankstesnes kategorijas" data-category-prev hidden>
+                <i data-lucide="arrow-left"></i>
+              </button>
+              <nav class="event-categories" aria-label="Naujienų kategorijos" data-acf-repeater="news_categories" data-category-rail>
+                <button type="button" class="category-chip is-active" data-category-filter="all">Visi</button>
+                <button type="button" class="category-chip" data-category-filter="renginiai">Renginiai</button>
+                <button type="button" class="category-chip" data-category-filter="uzsienio-ziniasklaidoje">Užsienio žiniasklaidoje</button>
+                <button type="button" class="category-chip" data-category-filter="turizmas">Turizmas</button>
+                <button type="button" class="category-chip" data-category-filter="lankytinos-vietos">Lankytinos vietos</button>
+                <button type="button" class="category-chip" data-category-filter="kultura">Kultūra</button>
+                <button type="button" class="category-chip" data-category-filter="bendruomene">Bendruomenė</button>
+              </nav>
+              <button type="button" class="event-categories__next" aria-label="Rodyti daugiau kategorijų" data-category-next>
+                <i data-lucide="arrow-right"></i>
+              </button>
+            </div>
+
             <div class="news-grid" data-acf-repeater="news_items">
               <article class="news-card">
                 <a href="/naujienos/carmina-burana/">
@@ -129,13 +173,12 @@
                     <img data-asset="news-detail-carmina" alt="Carmina Burana scena elinge" />
                   </div>
                   <div class="news-card__body">
-                    <h2>Beribėje elingo ir uosto scenoje bus pristatyta „Carmina Burana“</h2>
+                    <h2>Beribėje elingo ir uosto scenoje bus pristatyta „Carmina Burana"</h2>
                     <p class="news-card__date"><i data-lucide="calendar-days"></i> 2023-03-13</p>
                     <p>Klaipėdos festivalyje senasis elingas taps didinga scena Carlo Orffo kantatai ir miesto istorijai.</p>
                   </div>
                 </a>
               </article>
-
               <article class="news-card">
                 <a href="/naujienos/carmina-burana/">
                   <div class="news-card__media">
@@ -148,7 +191,6 @@
                   </div>
                 </a>
               </article>
-
               <article class="news-card">
                 <a href="/naujienos/carmina-burana/">
                   <div class="news-card__media">
@@ -161,7 +203,6 @@
                   </div>
                 </a>
               </article>
-
               <article class="news-card">
                 <a href="/naujienos/carmina-burana/">
                   <div class="news-card__media">
@@ -174,7 +215,6 @@
                   </div>
                 </a>
               </article>
-
               <article class="news-card">
                 <a href="/naujienos/carmina-burana/">
                   <div class="news-card__media">
@@ -187,7 +227,6 @@
                   </div>
                 </a>
               </article>
-
               <article class="news-card">
                 <a href="/naujienos/carmina-burana/">
                   <div class="news-card__media">
@@ -201,32 +240,32 @@
                 </a>
               </article>
             </div>
-
-            <nav class="news-pagination" aria-label="Naujienų puslapiai">
-              <a class="is-active" href="/naujienos/" aria-current="page">1</a>
-              <a href="/naujienos/page/2/">2</a>
-              <a href="/naujienos/page/3/">3</a>
-              <span>...</span>
-              <a href="/naujienos/page/26/">26</a>
-            </nav>
+            <div class="news-pagination-row">
+              <nav class="events-pagination" aria-label="Naujienų puslapiai">
+                <a href="/naujienos/" aria-label="Ankstesnis puslapis"><i data-lucide="chevron-left"></i></a>
+                <a class="is-active" href="/naujienos/" aria-current="page">1</a>
+                <a href="/naujienos/page/2/">2</a>
+                <a href="/naujienos/page/3/">3</a>
+                <span>...</span>
+                <a href="/naujienos/page/26/">26</a>
+                <a href="/naujienos/page/2/" aria-label="Kitas puslapis"><i data-lucide="chevron-right"></i></a>
+              </nav>
+              <a href="/naujienos/archyvas/" class="news-archive-btn">Naujienų archyvas</a>
+            </div>
           </div>
         </section>
       </main>
-
       <footer class="site-footer" data-wp-partial="template-parts/footer/site-footer.php">
         <div class="site-footer__bg" aria-hidden="true">
           <img data-asset="footer-ribbon" alt="" />
         </div>
-
         <section class="footer-top" id="investuok">
           <div class="footer-top__inner">
             <a class="site-logo site-logo--footer" href="/" aria-label="KlaipėdON">
               <img data-asset="logo-footer" alt="KlaipėdON" />
             </a>
-
             <div class="footer-contact" data-acf-field="contact_email">
               <a href="mailto:info@klaipedon.lt" class="footer-contact__mail">info@klaipedon.lt</a>
-
               <form class="newsletter" data-acf-field="contact_form_shortcode">
                 <p class="newsletter__title">Naujienlaiškio prenumerata</p>
                 <label class="newsletter__field">
@@ -238,14 +277,12 @@
             </div>
           </div>
         </section>
-
         <section class="footer-bottom" id="gyvenk" data-wp-partial="template-parts/sections/footer-cta.php">
           <div class="footer-bottom__inner">
             <div class="footer-bottom__headline" data-acf-field="footer_tagline">
               <p>Sea yourself</p>
               <p>in Klaipėda</p>
             </div>
-
             <div class="footer-bottom__meta">
               <div class="footer-bottom__legal">
                 <a href="/" data-acf-field="privacy_policy_label">Privatumo politika</a>
@@ -260,7 +297,6 @@
         </section>
       </footer>
     </div>
-
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
