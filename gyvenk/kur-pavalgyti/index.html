@@ -45,12 +45,7 @@
               <span class="site-nav__link" aria-current="page">Atrask</span>
               <div class="site-nav__submenu site-nav__mega-menu" role="region" aria-label="Atrask navigacija">
                 <div class="site-nav__mega-menu-inner">
-                  <div class="site-nav__mega-grid site-nav__mega-grid--3col">
-                    <div class="site-nav__mega-col">
-                      <ul class="site-nav__mega-list">
-                        <li><a href="/naujienos/">Naujienos</a></li>
-                      </ul>
-                    </div>
+                  <div class="site-nav__mega-grid site-nav__mega-grid--2col">
                     <div class="site-nav__mega-col">
                       <ul class="site-nav__mega-list">
                         <li><a href="/ka-pamatyti/">Ką pamatyti?</a></li>
@@ -63,7 +58,7 @@
                     <div class="site-nav__mega-col">
                       <p class="site-nav__mega-col-title">Naudinga informacija</p>
                       <ul class="site-nav__mega-list">
-                        <li><a href="/atrask/">Rekomendacijos</a></li>
+                        <li><a href="/naujienos/">Naujienos</a></li>
                         <li><a href="/atrask/">Viešasis transportas</a></li>
                         <li><a href="/atrask/">Turisto rinkliava</a></li>
                       </ul>
@@ -213,7 +208,7 @@
           <div class="living-hero__ribbon" aria-hidden="true"></div>
         </section>
         <section class="living-filter" data-wp-partial="template-parts/eat/filter.php">
-          <form class="living-filter__inner" data-acf-field="eat_filter_form">
+          <form class="living-filter__inner living-filter__inner--5col" data-acf-field="eat_filter_form">
             <div class="filter-control custom-select" data-custom-select>
               <input type="hidden" name="place_type" value="" data-select-value />
               <button class="select-field" type="button" aria-expanded="false" aria-controls="eat-type-select" data-select-trigger>
@@ -253,6 +248,10 @@
               <span aria-hidden="true"></span>
               Vegetariški patiekalai
             </button>
+            <button class="living-check" type="button" aria-pressed="false" data-toggle-check>
+              <span aria-hidden="true"></span>
+              Pritaikyta vaikams
+            </button>
           </form>
         </section>
         <section class="living-directory" data-wp-partial="template-parts/eat/directory.php">
@@ -276,8 +275,8 @@
                 <p>Tradicinė lietuviška virtuvė su jūriniais patiekalais ir vaizdu į Danės upę.</p>
                 <div class="living-card__actions" aria-label="Nuorodos">
                   <a class="living-card__button" href="/gyvenk/kur-pavalgyti/zveju-namelis/">Rezervuokite staliuką</a>
-                  <a class="living-card__platform" href="https://www.tripadvisor.com/" aria-label="Tripadvisor">
-                    <img data-asset="logo-tripadvisor" alt="" />
+                  <a class="living-card__platform" href="https://maps.google.com/" aria-label="Google Maps">
+                    <i data-lucide="map-pin"></i>
                   </a>
                 </div>
               </article>
@@ -295,8 +294,8 @@
                 <p>Jaukios kavinės ir restoranai istoriniame prekybos pastate senamiesčio širdyje.</p>
                 <div class="living-card__actions" aria-label="Nuorodos">
                   <a class="living-card__button" href="/gyvenk/kur-pavalgyti/friedricho-pasazas/">Rezervuokite staliuką</a>
-                  <a class="living-card__platform" href="https://www.tripadvisor.com/" aria-label="Tripadvisor">
-                    <img data-asset="logo-tripadvisor" alt="" />
+                  <a class="living-card__platform" href="https://maps.google.com/" aria-label="Google Maps">
+                    <i data-lucide="map-pin"></i>
                   </a>
                 </div>
               </article>
@@ -314,8 +313,8 @@
                 <p>Modernūs restoranai ir barai miesto centre – nuo rytietiškos virtuvės iki europietiškos gastronomijos.</p>
                 <div class="living-card__actions" aria-label="Nuorodos">
                   <a class="living-card__button" href="/gyvenk/kur-pavalgyti/memelio-gatve/">Rezervuokite staliuką</a>
-                  <a class="living-card__platform" href="https://www.tripadvisor.com/" aria-label="Tripadvisor">
-                    <img data-asset="logo-tripadvisor" alt="" />
+                  <a class="living-card__platform" href="https://maps.google.com/" aria-label="Google Maps">
+                    <i data-lucide="map-pin"></i>
                   </a>
                 </div>
               </article>

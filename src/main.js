@@ -14,10 +14,14 @@ import brandLogo from "./assets/klaipedaON.svg";
 import citySeal from "./assets/city-seal.svg";
 import logoBooking from "./assets/logo-booking.svg";
 import logoTripadvisor from "./assets/logo-tripadvisor.svg";
+import logoGooglemaps from "./assets/logo-googlemaps.svg";
 import attractionsTop from "./assets/attractions-top.png";
 import homeGuideActivity from "./assets/home-guide-activity.webp";
 import navGyvenk from "./assets/home-guide-activity.webp"; // TODO: replace with actual jumping photo
 import navApie from "./assets/hero-bg.png"; // TODO: replace with aerial Klaipėda port photo
+import seimaiHero from "./assets/hero-bg.png"; // TODO: replace with family-life photo
+import jaunimuiHero from "./assets/hero-bg.png"; // TODO: replace with youth photo
+import talentuiHero from "./assets/hero-bg.png"; // TODO: replace with talent/career photo
 import homeGuideFood from "./assets/home-guide-food.webp";
 import homeGuideStay from "./assets/home-guide-stay.webp";
 import homeNewsRoute from "./assets/home-news-route.webp";
@@ -85,9 +89,13 @@ const assetMap = {
   "logo-header": brandLogo,
   "logo-booking": logoBooking,
   "logo-tripadvisor": logoTripadvisor,
+  "logo-googlemaps": logoGooglemaps,
   "home-guide-activity": homeGuideActivity,
   "nav-gyvenk-cta": navGyvenk,
   "nav-apie-cta": navApie,
+  "seimai-hero": seimaiHero,
+  "jaunimui-hero": jaunimuiHero,
+  "talentui-hero": talentuiHero,
   "home-guide-food": homeGuideFood,
   "home-guide-stay": homeGuideStay,
   "home-news-route": homeNewsRoute,

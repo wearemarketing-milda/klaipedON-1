@@ -314,8 +314,17 @@ export function initSiteUI() {
   }
 
   if (header) {
+    let lastScrollY = window.scrollY;
+
     const setHeaderState = () => {
-      header.classList.toggle("is-scrolled", window.scrollY > 8);
+      const currentScrollY = window.scrollY;
+      header.classList.toggle("is-scrolled", currentScrollY > 0);
+      if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        header.classList.add("is-hidden");
+      } else {
+        header.classList.remove("is-hidden");
+      }
+      lastScrollY = currentScrollY;
     };
 
     setHeaderState();

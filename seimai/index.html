@@ -45,12 +45,7 @@
               <span class="site-nav__link">Atrask</span>
               <div class="site-nav__submenu site-nav__mega-menu" role="region" aria-label="Atrask navigacija">
                 <div class="site-nav__mega-menu-inner">
-                  <div class="site-nav__mega-grid site-nav__mega-grid--3col">
-                    <div class="site-nav__mega-col">
-                      <ul class="site-nav__mega-list">
-                        <li><a href="/naujienos/">Naujienos</a></li>
-                      </ul>
-                    </div>
+                  <div class="site-nav__mega-grid site-nav__mega-grid--2col">
                     <div class="site-nav__mega-col">
                       <ul class="site-nav__mega-list">
                         <li><a href="/ka-pamatyti/">Ką pamatyti?</a></li>
@@ -63,7 +58,7 @@
                     <div class="site-nav__mega-col">
                       <p class="site-nav__mega-col-title">Naudinga informacija</p>
                       <ul class="site-nav__mega-list">
-                        <li><a href="/atrask/">Rekomendacijos</a></li>
+                        <li><a href="/naujienos/">Naujienos</a></li>
                         <li><a href="/atrask/">Viešasis transportas</a></li>
                         <li><a href="/atrask/">Turisto rinkliava</a></li>
                       </ul>
@@ -201,12 +196,16 @@
       </header>
 
       <main>
-        <section class="about-hero" data-wp-partial="template-parts/gyvenk/family-hero.php">
-          <div class="about-hero__inner">
+        <section class="living-hero" data-wp-partial="template-parts/gyvenk/family-hero.php">
+          <div class="living-hero__media" aria-hidden="true">
+            <img data-asset="seimai-hero" alt="" />
+          </div>
+          <div class="living-hero__inner">
             <p class="section-kicker">Gyvenk Klaipėdoje</p>
             <h1 data-acf-field="family_life_hero_title">Klaipėda šeimai</h1>
             <p data-acf-field="family_life_hero_intro">Klaipėda — tai ne tik jūra ir vėjas. Tai miestas, kuriame vaikai turi erdvės žaisti, mokyklos dirba su atsidavimu, o tėvai randa bendruomenę, kuri laiko kartu. Čia gyvenimas šeimos ritmu jau daugelį metų reiškia viena: gerai.</p>
           </div>
+          <div class="living-hero__ribbon" aria-hidden="true"></div>
         </section>
 
         <section class="home-news" data-wp-partial="template-parts/gyvenk/family-benefits.php">
