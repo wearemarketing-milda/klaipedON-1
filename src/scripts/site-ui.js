@@ -1,3 +1,10 @@
+import {
+  MAP_IMAGE_SIZE,
+  familyDistrictOrder,
+  familyDistricts,
+  familyDistrictStyles,
+} from "../data/klaipeda-family-districts.js";
+
 export function initSiteUI() {
   const googleMapStyles = [
     {
@@ -66,7 +73,7 @@ export function initSiteUI() {
   const homeNewsTabs = document.querySelectorAll("[data-home-news-tabs]");
   const googleMaps = document.querySelectorAll("[data-google-map]");
   const revealTargets = document.querySelectorAll(
-    ".events-panel, .info-panel, .home-attractions__intro, .home-attractions__layout, .home-guide__intro, .home-guide-card, .home-news__head, .home-news-card, .news-hero__inner, .news-archive__intro, .news-card, .news-detail-hero__inner, .news-detail-content__inner, .bike-hero__inner, .bike-content__intro, .bike-section, .archive-hero__inner, .exhibitions-hero__inner, .exhibition-venue, .exhibition-card, .about-hero__inner, .about-history-row, .living-hero__inner, .living-directory__intro, .living-card, .living-map, .events-filter, .event-categories, .archive-event-card",
+    ".events-panel, .info-panel, .home-attractions__intro, .home-attractions__layout, .home-guide__intro, .home-guide-card, .home-news__head, .home-news-card, .news-hero__inner, .news-archive__intro, .news-card, .news-detail-hero__inner, .news-detail-content__inner, .bike-hero__inner, .bike-content__intro, .bike-section, .archive-hero__inner, .exhibitions-hero__inner, .exhibition-venue, .exhibition-card, .about-hero__inner, .about-history-row, .living-hero__inner, .living-directory__intro, .living-card, .living-map, .events-filter, .event-categories, .archive-event-card, .family-stats__head, .family-stat, .family-districts__layout",
   );
   const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   const eventAccessibilityItems = [
@@ -507,7 +514,9 @@ export function initSiteUI() {
     let offset = 0;
     const getLoopWidth = () => rail.scrollWidth / 2;
     const getStep = () => {
-      const firstCard = rail.querySelector(".archive-event-card");
+      // Karuselėje gali būti skirtingų kortelių tipų (`archive-event-card` arba `news-card`),
+      // todėl step'ą skaičiuojam pagal pirmą rail'e esantį kortelės elementą.
+      const firstCard = rail.querySelector(".archive-event-card, .news-card, article");
       const cardWidth = firstCard?.getBoundingClientRect().width ?? 320;
       const parsedGap = Number.parseFloat(window.getComputedStyle(rail).columnGap || "0");
       const gap = Number.isFinite(parsedGap) ? parsedGap : 0;
@@ -1179,6 +1188,156 @@ export function initSiteUI() {
     });
   }
 
+  const initDistrictMaps = () => {
+    document.querySelectorAll("[data-district-map]").forEach((mapElement) => {
+      const explorer = mapElement.closest("[data-district-explorer]");
+      const canvas = mapElement.querySelector("[data-district-map-canvas]");
+      const setDistrict = explorer?.__setDistrict;
+
+      if (!explorer || !canvas || typeof setDistrict !== "function") {
+        return;
+      }
+
+      // Cleanup (important when Google Maps loads after our SVG fallback)
+      canvas.innerHTML = "";
+      explorer.__districtSvgRegions = undefined;
+      explorer.__districtSvg = undefined;
+      explorer.__districtPolygons = undefined;
+      explorer.__districtMap = undefined;
+
+      const bgUrl = mapElement.getAttribute("data-district-map-bg");
+      const forceSvgFallback = Boolean(bgUrl);
+
+      // 1) If Google Maps is available: keep the existing polygon logic
+      if (!forceSvgFallback && window.google?.maps) {
+        const lat = Number(mapElement.getAttribute("data-map-lat"));
+        const lng = Number(mapElement.getAttribute("data-map-lng"));
+        const zoom = Number(mapElement.getAttribute("data-map-zoom") ?? 12);
+
+        if (Number.isNaN(lat) || Number.isNaN(lng)) {
+          return;
+        }
+
+        const map = new window.google.maps.Map(canvas, {
+          center: { lat, lng },
+          zoom,
+          styles: googleMapStyles,
+          disableDefaultUI: true,
+          zoomControl: true,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false,
+          gestureHandling: "cooperative",
+        });
+
+        const polygons = new Map();
+
+        familyDistricts.forEach((district) => {
+          const polygon = new window.google.maps.Polygon({
+            paths: district.paths,
+            map,
+            clickable: true,
+            ...familyDistrictStyles.default,
+          });
+
+          polygon.addListener("click", () => setDistrict(district.id));
+          polygons.set(district.id, polygon);
+        });
+
+        explorer.__districtPolygons = polygons;
+        explorer.__districtMap = map;
+        mapElement.classList.add("is-loaded");
+
+        if (explorer.__activeDistrictId) {
+          setDistrict(explorer.__activeDistrictId);
+        }
+        return;
+      }
+
+      // 2) SVG fallback: Figma background + our 5 district polygons
+      // (Figma node contains the background and one active styling example; we still draw all districts from our ids.)
+      const SVG_NS = "http://www.w3.org/2000/svg";
+      const vbX = 0;
+      const vbY = 0;
+      const vbW = MAP_IMAGE_SIZE.width;
+      const vbH = MAP_IMAGE_SIZE.height;
+
+      const svg = document.createElementNS(SVG_NS, "svg");
+      svg.setAttribute("viewBox", `${vbX} ${vbY} ${vbW} ${vbH}`);
+      svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+      svg.setAttribute(
+        "aria-label",
+        mapElement.getAttribute("aria-label") || "Klaipėdos gyvenamųjų rajonų žemėlapis",
+      );
+      svg.setAttribute("role", "img");
+      svg.classList.add("district-map-svg");
+
+      if (bgUrl) {
+        const bgImage = document.createElementNS(SVG_NS, "image");
+        bgImage.setAttribute("href", bgUrl);
+        bgImage.setAttributeNS("http://www.w3.org/1999/xlink", "href", bgUrl);
+        bgImage.setAttribute("x", "0");
+        bgImage.setAttribute("y", "0");
+        bgImage.setAttribute("width", String(MAP_IMAGE_SIZE.width));
+        bgImage.setAttribute("height", String(MAP_IMAGE_SIZE.height));
+        bgImage.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        svg.appendChild(bgImage);
+      }
+
+      const tints = new Map();
+      const outlines = new Map();
+
+      familyDistricts.forEach((district) => {
+        if (!district.svgD) return;
+
+        const group = document.createElementNS(SVG_NS, "g");
+
+        const hit = document.createElementNS(SVG_NS, "path");
+        hit.setAttribute("d", district.svgD);
+        hit.setAttribute("class", "district-map__hit");
+        hit.setAttribute("role", "button");
+        hit.setAttribute("tabindex", "0");
+        hit.setAttribute("aria-label", district.name);
+        hit.addEventListener("click", () => setDistrict(district.id));
+        hit.addEventListener("keydown", (e) => {
+          if (e.key !== "Enter" && e.key !== " ") return;
+          e.preventDefault();
+          setDistrict(district.id);
+        });
+
+        const tint = document.createElementNS(SVG_NS, "path");
+        tint.setAttribute("d", district.svgD);
+        tint.setAttribute("class", "district-map__tint");
+
+        const outline = document.createElementNS(SVG_NS, "path");
+        outline.setAttribute("d", district.svgD);
+        outline.setAttribute("class", "district-map__outline");
+
+        group.append(hit, tint, outline);
+        svg.appendChild(group);
+
+        tints.set(district.id, tint);
+        outlines.set(district.id, outline);
+      });
+
+      explorer.__districtSvg = {
+        spotHole: null,
+        tints,
+        outlines,
+      };
+
+      explorer.__districtSvgRegions = undefined;
+      canvas.appendChild(svg);
+      mapElement.classList.add("is-loaded");
+
+      if (explorer.__activeDistrictId) {
+        setDistrict(explorer.__activeDistrictId);
+      } else {
+        setDistrict(familyDistrictOrder[0]);
+      }
+    });
+  };
+
   const initGoogleMaps = () => {
     if (!window.google?.maps) {
       return;
@@ -1212,11 +1371,108 @@ export function initSiteUI() {
 
       mapElement.classList.add("is-loaded");
     });
+
+    initDistrictMaps();
   };
 
   window.initKlaipedonMaps = initGoogleMaps;
 
-  if (googleMaps.length) {
+  document.querySelectorAll("[data-district-explorer]").forEach((explorer) => {
+    const panels = explorer.querySelectorAll("[data-district-panel]");
+    const legendItems = explorer.querySelectorAll("[data-district-trigger]");
+    const prevButton = explorer.querySelector("[data-district-prev]");
+    const nextButton = explorer.querySelector("[data-district-next]");
+    let activeIndex = 0;
+
+    if (!panels.length) {
+      return;
+    }
+
+    const setDistrict = (districtId) => {
+      const index = familyDistrictOrder.indexOf(districtId);
+
+      if (index === -1) {
+        return;
+      }
+
+      activeIndex = index;
+      explorer.__activeDistrictId = districtId;
+
+      legendItems.forEach((item) => {
+        const isActive = item.getAttribute("data-district-trigger") === districtId;
+        item.classList.toggle("is-active", isActive);
+        item.setAttribute("aria-pressed", String(isActive));
+      });
+
+      panels.forEach((panel) => {
+        const isActive = panel.dataset.districtPanel === districtId;
+        panel.classList.toggle("is-active", isActive);
+        panel.hidden = !isActive;
+      });
+
+      const polygons = explorer.__districtPolygons;
+
+      if (polygons) {
+        polygons.forEach((polygon, id) => {
+          polygon.setOptions(id === districtId ? familyDistrictStyles.active : familyDistrictStyles.muted);
+        });
+      }
+
+      const svgRegions = explorer.__districtSvgRegions;
+      if (svgRegions) {
+        svgRegions.forEach((path, id) => {
+          const style = id === districtId ? familyDistrictStyles.active : familyDistrictStyles.muted;
+          path.setAttribute("fill", style.fillColor);
+          path.setAttribute("fill-opacity", String(style.fillOpacity));
+          path.setAttribute("stroke", style.strokeColor);
+          path.setAttribute("stroke-opacity", String(style.strokeOpacity));
+          path.setAttribute("stroke-width", String(style.strokeWeight));
+        });
+      }
+
+      const districtSvg = explorer.__districtSvg;
+      if (districtSvg) {
+        const activeDistrict = familyDistricts.find((d) => d.id === districtId);
+
+        if (districtSvg.spotHole && activeDistrict?.svgD) {
+          districtSvg.spotHole.setAttribute("d", activeDistrict.svgD);
+        }
+
+        districtSvg.tints.forEach((el, id) => {
+          el.classList.toggle("is-active", id === districtId);
+        });
+        districtSvg.outlines.forEach((el, id) => {
+          el.classList.toggle("is-active", id === districtId);
+        });
+      }
+    };
+
+    const stepDistrict = (direction) => {
+      const nextIndex = (activeIndex + direction + familyDistrictOrder.length) % familyDistrictOrder.length;
+      setDistrict(familyDistrictOrder[nextIndex]);
+    };
+
+    legendItems.forEach((item) => {
+      item.addEventListener("click", () => {
+        setDistrict(item.getAttribute("data-district-trigger") || "");
+      });
+    });
+
+    prevButton?.addEventListener("click", () => stepDistrict(-1));
+    nextButton?.addEventListener("click", () => stepDistrict(1));
+
+    explorer.__setDistrict = setDistrict;
+    setDistrict(familyDistrictOrder[activeIndex]);
+  });
+
+  const districtMaps = document.querySelectorAll("[data-district-map]");
+  // Ensure district explorer is interactive even without Google Maps API.
+  // - If Google Maps is present -> we build polygons
+  // - Otherwise -> we build an SVG overlay fallback
+  initDistrictMaps();
+  const needsGoogleMaps = googleMaps.length || districtMaps.length;
+
+  if (needsGoogleMaps) {
     const apiKey = window.KLAIPEDON_GOOGLE_MAPS_API_KEY;
 
     if (window.google?.maps) {
@@ -1229,6 +1485,52 @@ export function initSiteUI() {
       script.setAttribute("data-klaipedon-google-maps-script", "");
       document.head.append(script);
     }
+  }
+
+  // Sticky-card stack: cards are all sticky at the same top, later cards push earlier
+  // ones down by scaling them (like BYQ/Reforma sticky-card stack).
+  const familyStatCards = Array.from(document.querySelectorAll(".family-stats__list .family-stat"));
+  if (familyStatCards.length) {
+    const stickyTop = 120; // px from viewport top where cards stick
+    const scaleStep = 0.06; // each covered card shrinks by this much
+    const zBase = 10;
+
+    // All cards stick at the same top — the "stack" effect comes from scale.
+    familyStatCards.forEach((card, index) => {
+      card.style.setProperty("--family-stat-top", `${stickyTop}px`);
+      card.style.setProperty("--family-stat-z", String(zBase + index));
+      card.style.transformOrigin = "top center";
+      card.style.transition = "transform 0.35s ease, box-shadow 0.35s ease";
+    });
+
+    let rafId = null;
+    const updateStack = () => {
+      rafId = null;
+      familyStatCards.forEach((card, index) => {
+        const rect = card.getBoundingClientRect();
+        // Count how many cards are currently sitting on top of this one
+        // (i.e. have reached their sticky top position).
+        let coversCount = 0;
+        for (let j = index + 1; j < familyStatCards.length; j++) {
+          const nextRect = familyStatCards[j].getBoundingClientRect();
+          // A later card "covers" this one once its top reaches the sticky threshold.
+          if (nextRect.top <= stickyTop + 2) {
+            coversCount++;
+          }
+        }
+        const scale = Math.max(0.8, 1 - coversCount * scaleStep);
+        card.style.transform = `scale(${scale})`;
+      });
+    };
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(updateStack);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", updateStack);
+    updateStack();
   }
 
   if ("IntersectionObserver" in window) {

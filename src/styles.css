@@ -1313,16 +1313,16 @@
   }
 
   .home-guide-card__media--right-step::after {
-    right: 0;
-    bottom: 0;
+    right: -1px;
+    bottom: -1px;
     width: 5.2rem;
     height: 13.6rem;
     clip-path: polygon(0 100%, 0 54%, 42% 54%, 42% 0, 100% 0, 100% 100%);
   }
 
   .home-guide-card__media--left-step::after {
-    top: 0;
-    left: 0;
+    top: -1px;
+    left: -1px;
     width: 5.2rem;
     height: 18rem;
     clip-path: polygon(0 0, 100% 0, 100% 42%, 58% 42%, 58% 100%, 0 100%);
@@ -1835,8 +1835,9 @@
     font-size: 3.75rem;
   }
 
-  .page-shell--bike .home-guide-card__media--right-step::after,
-  .page-shell--bike .home-guide-card__media--left-step::after {
+  /* Bike-theme pages sometimes reuse family-life styling; keep "step" decoration visible there */
+  .page-shell--bike:not(.page-shell--family-life) .home-guide-card__media--right-step::after,
+  .page-shell--bike:not(.page-shell--family-life) .home-guide-card__media--left-step::after {
     display: none;
   }
 
@@ -1879,26 +1880,29 @@
     color: #000000;
   }
 
-  .page-shell--family-life .home-news .events-carousel {
-    position: relative;
-    width: 100%;
-    margin-left: 0;
+  .page-shell--living-family .living-hero__inner,
+  .page-shell--family-life .home-news__inner,
+  .page-shell--living-family .home-guide__inner,
+  .page-shell--family-life .about-history__inner,
+  .page-shell--living-family .footer-top__inner,
+  .page-shell--living-family .footer-bottom__inner {
+    width: min(100%, 1440px);
   }
 
+  .page-shell--family-life .home-news .events-panel__footer {
+    padding-inline: 4.625rem;
+  }
 
-  .page-shell--family-life .home-news .events-carousel__controls {
-    position: static;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 1.25rem 0 0;
-    pointer-events: auto;
-    z-index: auto;
-    gap: 0.7rem;
+  .page-shell--family-life .home-news .events-panel__footer .events-carousel__controls {
+    padding: 0;
+  }
+
+  /* `jaunimui/` puslapyje į dešinę norim perkelti tik karuselės rodykles. */
+  .page-shell--bike.page-shell--family-life .home-news .events-panel__footer {
+    justify-content: flex-end;
   }
 
   .page-shell--family-life .home-news .events-carousel__controls button {
-    background: transparent;
     border-color: rgba(0, 0, 0, 0.26);
     color: var(--color-ink);
   }
@@ -1909,13 +1913,7 @@
     color: white;
   }
 
-  .page-shell--family-life .home-news .news-card__media {
-    aspect-ratio: 16 / 9;
-    max-height: 14rem;
-  }
-
-  .page-shell--family-life .about-history,
-  .page-shell--family-life .home-guide {
+  .page-shell--family-life .about-history {
     background: #ffffff;
   }
 
@@ -1933,7 +1931,7 @@
   }
 
   .page-shell--bike .events-carousel__controls {
-    padding-left: calc(7vw + 4.625rem);
+    padding-left: 0;
     padding-top: 1.5rem;
     padding-bottom: 0.5rem;
   }
@@ -2863,6 +2861,406 @@
     height: calc(3.4rem + 1px);
     background: var(--color-day);
     clip-path: polygon(0 100%, 0 67%, 42% 67%, 42% 50%, 62% 50%, 62% 34%, 82% 34%, 82% 17%, 100% 17%, 100% 100%);
+  }
+
+  .page-shell--living-family {
+    background: var(--color-paper);
+    --footer-step-color: var(--color-soft-blue);
+  }
+
+  .page-shell--living-family .home-guide {
+    background: var(--color-soft-blue);
+  }
+
+  .page-shell--living-family .home-guide::before {
+    display: none;
+  }
+
+  .page-shell--living-family .home-guide__inner {
+    padding-top: 5.5rem;
+  }
+
+  .page-shell--living-family .home-guide-card__content {
+    max-width: 38rem;
+    gap: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 34.4rem; /* sulyginam su .home-guide-card__media img height (desktop) */
+  }
+
+  /* `seimai/` puslapyje tekstas kortelėje atrodo per aukštai — sulygiuojam su foto apačia */
+  .page-shell--living-family .home-guide-card {
+    align-items: center;
+  }
+
+  .page-shell--living-family .home-guide-card__content {
+    align-self: center;
+  }
+
+  .living-hero--family .living-hero__inner {
+    min-height: 36rem;
+    padding-bottom: 6.5rem;
+  }
+
+  .family-stats {
+    background: var(--color-paper);
+    color: var(--color-night);
+  }
+
+  .family-stats__inner {
+    width: min(100%, 1440px);
+    margin: 0 auto;
+    padding: 5.5rem 4.625rem 6.5rem;
+  }
+
+  .family-stats__head {
+    max-width: 42rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .family-stats__head h2 {
+    margin: 0.75rem 0 0;
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.055em;
+  }
+
+  /* Sticky cards (BYQ/Reforma-style) */
+  .family-stats__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 0;
+  }
+
+  .family-stat {
+    --family-stat-top: 120px;
+    --family-stat-z: 1;
+    position: sticky;
+    top: var(--family-stat-top);
+    z-index: var(--family-stat-z);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(19rem, 0.62fr);
+    align-items: stretch;
+    gap: clamp(2rem, 4vw, 4rem);
+    padding: 2.4rem 2.4rem;
+    background: var(--color-paper);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .family-stat:nth-child(odd) {
+    background: var(--color-soft-blue);
+  }
+
+  .family-stat:nth-child(even) {
+    background: var(--color-soft-paper);
+  }
+
+  .family-stat__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .family-stat__media {
+    position: relative;
+    height: 19.75rem;
+    overflow: hidden;
+    background: var(--color-day);
+  }
+
+  .family-stat__media img {
+    width: 100%;
+    height: 19.75rem;
+    object-fit: cover;
+  }
+
+  .family-stat__figure {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4em;
+    flex: 0 0 auto;
+    min-width: min(100%, 12rem);
+    padding-top: 0.2rem;
+  }
+
+  .family-stat__number {
+    color: var(--color-day);
+    font-size: clamp(2.6rem, 5vw, 4.4rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    white-space: nowrap;
+  }
+
+  .family-stat__suffix {
+    font-size: 0.62em;
+    letter-spacing: -0.04em;
+  }
+
+  .family-stat__unit {
+    color: rgba(47, 95, 214, 0.72);
+    font-size: clamp(0.95rem, 1.45vw, 1.15rem);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    text-transform: none;
+    translate: 0 -0.08em;
+  }
+
+  .family-stat__body {
+    display: grid;
+    gap: 1.1rem;
+    flex: 0 0 auto;
+    max-width: none;
+  }
+
+  .family-stat__body p {
+    margin: 0;
+    color: rgba(7, 26, 68, 0.76);
+    font-size: 1.05rem;
+    line-height: 1.65;
+  }
+
+  .family-stat .events-panel__all {
+    margin-top: 0.25rem;
+    font-size: 1rem;
+  }
+
+  .family-districts {
+    position: relative;
+    background: var(--color-paper);
+    color: var(--color-night);
+  }
+
+  .family-districts__inner {
+    width: min(100%, 1440px);
+    margin: 0 auto;
+    padding: 6rem 4.625rem 8.5rem;
+  }
+
+  .family-districts__intro {
+    max-width: none;
+    margin-bottom: 4.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: end;
+  }
+
+  .family-districts__intro h2 {
+    margin: 0;
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.055em;
+  }
+
+  .family-districts__intro p {
+    margin: 0;
+    color: rgba(7, 26, 68, 0.72);
+    font-size: 1.05rem;
+    line-height: 1.62;
+  }
+
+  .family-districts__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: stretch;
+  }
+
+  .family-districts__map-wrap {
+    aspect-ratio: 2131 / 1598;
+    min-height: 0;
+    padding: 0;
+    background: white;
+    border: 1px solid rgba(7, 26, 68, 0.1);
+    overflow: visible;
+  }
+
+  .family-districts__map.event-map {
+    min-height: 0;
+    height: auto;
+    border: 0;
+    background: var(--color-soft-blue);
+  }
+
+  .family-districts__map .event-map__canvas {
+    position: relative;
+    inset: auto;
+    display: block;
+    width: 100%;
+    height: auto;
+    line-height: 0;
+  }
+
+  .family-districts__map .district-map-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2131 / 1598;
+  }
+
+  .family-districts__map .district-map__hit {
+    fill: transparent;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .family-districts__map .district-map__hit:focus-visible {
+    fill: #1d4f91;
+    fill-opacity: 0.12;
+  }
+
+  .family-districts__map .district-map__outline {
+    fill: none;
+    stroke: var(--color-night);
+    stroke-opacity: 0.45;
+    stroke-width: 2;
+    pointer-events: none;
+    transition:
+      stroke 0.3s ease,
+      stroke-opacity 0.3s ease,
+      stroke-width 0.3s ease;
+  }
+
+  .family-districts__map .district-map__outline.is-active {
+    stroke: #1d4f91;
+    stroke-opacity: 0.6;
+    stroke-width: 3;
+  }
+
+  .family-districts__map .district-map__tint {
+    fill: #1d4f91;
+    fill-opacity: 0.1;
+    pointer-events: none;
+    transition: fill-opacity 0.35s ease;
+  }
+
+  .family-districts__map .district-map__tint.is-active {
+    fill-opacity: 0.2;
+  }
+
+  .family-districts__legend {
+    position: absolute;
+    top: auto;
+    right: auto;
+    bottom: 16px;
+    left: 16px;
+    z-index: 3;
+    display: grid;
+    gap: 0.45rem;
+    width: min(100% - 2rem, 15rem);
+    padding: 0.85rem 1rem;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(7, 26, 68, 0.12);
+    box-shadow: 0 0.75rem 2rem rgba(7, 26, 68, 0.08);
+  }
+
+  .family-districts__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: rgba(7, 26, 68, 0.72);
+    font: inherit;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    text-align: left;
+    cursor: pointer;
+    transition: color 220ms ease;
+  }
+
+  .family-districts__legend-item:hover,
+  .family-districts__legend-item.is-active {
+    color: var(--color-night);
+  }
+
+  .family-districts__legend-item.is-active .family-districts__legend-swatch {
+    background: rgba(47, 95, 214, 0.42);
+    border-color: var(--color-day);
+  }
+
+  .family-districts__legend-swatch {
+    flex: 0 0 auto;
+    width: 0.75rem;
+    height: 0.75rem;
+    border: 1px solid rgba(47, 95, 214, 0.55);
+    background: rgba(47, 95, 214, 0.16);
+  }
+
+  .family-districts__panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 22rem;
+    padding: 2rem 0 0.5rem;
+  }
+
+  .family-districts__index {
+    margin: 0 0 1rem;
+    color: rgba(7, 26, 68, 0.52);
+    font-size: 0.92rem;
+    letter-spacing: 0.04em;
+  }
+
+  .family-districts__detail h3 {
+    margin: 0 0 1.25rem;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.045em;
+  }
+
+  .family-districts__detail p {
+    margin: 0;
+    color: rgba(7, 26, 68, 0.76);
+    font-size: 1.02rem;
+    line-height: 1.68;
+  }
+
+  .family-districts__controls {
+    display: flex;
+    gap: 0.7rem;
+    margin-top: 2rem;
+  }
+
+  .family-districts__controls button {
+    display: grid;
+    width: 3.2rem;
+    height: 3.2rem;
+    place-items: center;
+    border: 1px solid rgba(7, 26, 68, 0.26);
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition:
+      background 220ms ease,
+      border-color 220ms ease,
+      color 220ms ease,
+      transform 320ms var(--ease-out-cinematic);
+  }
+
+  .family-districts__controls button:hover {
+    border-color: var(--color-day);
+    background: var(--color-day);
+    color: white;
+    transform: translateY(-0.12rem);
+  }
+
+  .family-districts__controls button .lucide {
+    width: 1.1rem;
+    height: 1.1rem;
   }
 
   .living-filter {
@@ -5754,7 +6152,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    /* Kad fono paveikslėlio apačia sutaptų su footer apačia (nepaliktų baltos "uodegos") */
+    object-position: center bottom;
   }
 
   .footer-top {
@@ -6130,8 +6529,19 @@
   .event-detail-layout,
   .event-location,
   .related-events,
-  .events-archive {
+  .events-archive,
+  .family-stats__inner,
+  .family-districts__inner {
     padding-inline: 1.5rem;
+  }
+
+  .family-districts__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .family-districts__panel {
+    min-height: auto;
+    padding-top: 1rem;
   }
 
   .events-archive {
@@ -6535,6 +6945,12 @@
     gap: 2rem;
   }
 
+  /* Mobile’e neatakuojam content aukščiu, nes foto aukštis mažėja */
+  .page-shell--living-family .home-guide-card__content {
+    height: auto;
+    display: grid;
+  }
+
   .home-guide-card__media,
   .home-guide-card__media img {
     min-height: 24rem;
@@ -6846,6 +7262,64 @@
 
   .living-hero__ribbon {
     height: calc(1.8rem + 1px);
+  }
+
+  .family-stats__inner {
+    padding-block: 4rem;
+  }
+
+  .family-districts__inner {
+    padding-block: 4rem 5.5rem;
+  }
+
+  .family-districts__intro {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+    margin-bottom: 3rem;
+  }
+
+  .family-districts__intro h2 {
+    margin: 0;
+  }
+
+  .family-districts__intro p {
+    max-width: 52rem;
+  }
+
+  .family-districts__legend {
+    top: auto;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    width: auto;
+    padding: 0.75rem;
+  }
+
+  .family-stat {
+    position: static;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1.75rem 0;
+    min-height: 0;
+  }
+
+  .family-stat__media {
+    min-height: 14rem;
+  }
+
+  .family-stat__media img {
+    height: 14rem;
+  }
+
+  .family-stat__content {
+    min-height: auto;
+    height: auto;
+    justify-content: flex-start;
+  }
+
+  .family-stat__body {
+    flex: 1 1 auto;
+    max-width: none;
   }
 
   .events-archive {

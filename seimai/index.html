@@ -16,7 +16,7 @@
     />
   </head>
   <body>
-    <div class="page-shell page-shell--bike page-shell--family-life">
+    <div class="page-shell page-shell--living-family page-shell--family-life">
       <header class="site-header" data-site-header data-wp-partial="template-parts/header/site-header.php">
         <div class="site-header__inner">
           <a class="site-logo" href="/" aria-label="KlaipėdON">
@@ -202,207 +202,263 @@
           </div>
           <div class="living-hero__inner">
             <p class="section-kicker">Gyvenk Klaipėdoje</p>
-            <h1 data-acf-field="family_life_hero_title">Klaipėda šeimai</h1>
-            <p data-acf-field="family_life_hero_intro">Klaipėda — tai ne tik jūra ir vėjas. Tai miestas, kuriame vaikai turi erdvės žaisti, mokyklos dirba su atsidavimu, o tėvai randa bendruomenę, kuri laiko kartu. Čia gyvenimas šeimos ritmu jau daugelį metų reiškia viena: gerai.</p>
+            <h1 data-acf-field="family_life_hero_title">Apie gyvenimą Klaipėdoje šeimai</h1>
+            <p data-acf-field="family_life_hero_intro">
+              Klaipėdoje šeimai vietos netrūksta – nei namams, nei smalsumui, nei vaikų energijai, kurios, kaip žinome, jie visada turi daugiau nei jų tėvai. Čia mokyklos augina ne vien žinias, kiemai ir parkai vaikus kviečia krėsti eibes, o bendruomenės padeda greičiau pasijusti namie.
+            </p>
           </div>
           <div class="living-hero__ribbon" aria-hidden="true"></div>
         </section>
 
-        <section class="home-news" data-wp-partial="template-parts/gyvenk/family-benefits.php">
-          <div class="home-news__inner">
-            <div class="home-news__head">
-              <div class="home-news__copy">
-                <h2 data-acf-field="family_benefits_title">Kodėl rinktis Klaipėdą?</h2>
-              </div>
+        <section class="family-stats" id="kodel" data-wp-partial="template-parts/gyvenk/family-benefits.php">
+          <div class="family-stats__inner">
+            <div class="family-stats__head">
+              <h2 data-acf-field="family_benefits_title">Kodėl rinktis Klaipėdą?</h2>
             </div>
 
-            <div class="home-news__grid" data-acf-repeater="family_benefit_items">
-              <div class="events-carousel" data-events-carousel data-no-autoscroll>
-                <div class="events-rail" data-events-rail>
-
-                  <article class="news-card">
-                    <a href="/gyvenk/svietimo-istaigos/">
-                      <div class="news-card__media">
-                        <img data-asset="home-guide-stay" alt="Švietimas Klaipėdoje" />
-                      </div>
-                      <div class="news-card__body">
-                        <h2>30+ mokyklų vienoje vietoje</h2>
-                        <p>Nuo darželio iki universiteto — visas mokymosi kelias Klaipėdoje, be būtinybės išvykti.</p>
-                      </div>
-                    </a>
-                  </article>
-
-                  <article class="news-card">
-                    <a href="/ka-veikti-laisvalaikiu/">
-                      <div class="news-card__media">
-                        <img data-asset="hero-bg" alt="Gamta Klaipėdoje" />
-                      </div>
-                      <div class="news-card__body">
-                        <h2>Jūra, miškas ir upė — kasdien</h2>
-                        <p>Nedaugelis Lietuvos miestų duoda šeimoms tiek gamtos taip arti namų.</p>
-                      </div>
-                    </a>
-                  </article>
-
-                  <article class="news-card">
-                    <a href="/seimai/">
-                      <div class="news-card__media">
-                        <img data-asset="home-news-city" alt="Saugus miestas" />
-                      </div>
-                      <div class="news-card__body">
-                        <h2>Vienas saugiausių miestų</h2>
-                        <p>Žemas nusikalstamumas reiškia vieną dalyką: vaikai gali važinėti patys, o tėvai — kvėpuoti laisvai.</p>
-                      </div>
-                    </a>
-                  </article>
-
-                  <article class="news-card">
-                    <a href="/renginiai/">
-                      <div class="news-card__media">
-                        <img data-asset="home-guide-activity" alt="Bendruomenė Klaipėdoje" />
-                      </div>
-                      <div class="news-card__body">
-                        <h2>Tikra bendruomenė</h2>
-                        <p>Tėvų grupės, vaikų klubai, sporto sekcijos — miestas, kuriame kaimynai vis dar pažįsta vieni kitus.</p>
-                      </div>
-                    </a>
-                  </article>
-
-                  <article class="news-card">
-                    <a href="/renginiai/">
-                      <div class="news-card__media">
-                        <img data-asset="news-aitvaru" alt="Renginiai šeimoms" />
-                      </div>
-                      <div class="news-card__body">
-                        <h2>Renginiai ištisus metus</h2>
-                        <p>Jūros šventė, žiemos turgai, teatro sezonas — renginių kalendorius veikia visu ritmu visoms kartoms.</p>
-                      </div>
-                    </a>
-                  </article>
-
-                  <article class="news-card">
-                    <a href="/ka-veikti-laisvalaikiu/">
-                      <div class="news-card__media">
-                        <img data-asset="home-news-route" alt="Dviračių takai Klaipėdoje" />
-                      </div>
-                      <div class="news-card__body">
-                        <h2>50+ km dviračių takų</h2>
-                        <p>Į mokyklą, parką ar pajūrį — saugiu dviračių takų tinklu be automobilio.</p>
-                      </div>
-                    </a>
-                  </article>
-
-                  <article class="news-card">
-                    <a href="/gyvenk/studijuok/">
-                      <div class="news-card__media">
-                        <img data-asset="home-news-port" alt="Klaipėdos universitetas" />
-                      </div>
-                      <div class="news-card__body">
-                        <h2>Universitetas čia pat</h2>
-                        <p>Vaikai auga mieste, kuriame studijos yra natūrali gyvenimo tąsa, o ne priežastis išvykti.</p>
-                      </div>
-                    </a>
-                  </article>
-
-                  <article class="news-card">
-                    <a href="/seimai/">
-                      <div class="news-card__media">
-                        <img data-asset="news-muge" alt="Sveikata Klaipėdoje" />
-                      </div>
-                      <div class="news-card__body">
-                        <h2>Sveikata be kelionės į Vilnių</h2>
-                        <p>Šeimos klinikos ir vaikų ligoninė Klaipėdoje — greita pagalba be ilgų laukimų.</p>
-                      </div>
-                    </a>
-                  </article>
-
+            <div class="family-stats__list" data-acf-repeater="family_benefit_items">
+              <article class="family-stat" data-stat-index="0">
+                <div class="family-stat__content">
+                  <div class="family-stat__figure">
+                    <span class="family-stat__number">10–20</span>
+                    <span class="family-stat__unit">min.</span>
+                  </div>
+                  <div class="family-stat__body">
+                    <p>Kasdien vos per 10-20 minučių – Jūra, miškas, mokykla ar darbas. Čia šeimos savaitgalis gali prasidėti ir antradienį – gamta per arti, kad jos reikėtų nekantriai laukti.</p>
+                  </div>
                 </div>
-                <div class="events-carousel__controls">
-                  <button type="button" aria-label="Ankstesnis" data-events-prev><i data-lucide="chevron-left"></i></button>
-                  <button type="button" aria-label="Kitas" data-events-next><i data-lucide="chevron-right"></i></button>
+                <div class="family-stat__media" aria-hidden="true">
+                  <img data-asset="home-guide-activity" alt="" />
                 </div>
-              </div>
+              </article>
+
+              <article class="family-stat" data-stat-index="1">
+                <div class="family-stat__content">
+                  <div class="family-stat__figure">
+                    <span class="family-stat__number">100+</span>
+                    <span class="family-stat__unit">įstaigų</span>
+                  </div>
+                  <div class="family-stat__body">
+                    <p>100+ švietimo įstaigų vienoje vietoje: Nuo pirmos dienos darželyje iki diplomo aukštojoje mokykloje – visas mokymosi kelias Klaipėdoje, be būtinybės krautis lagaminus.</p>
+                    <a class="events-panel__all" href="/gyvenk/svietimo-istaigos/">Žiūrėti švietimo įstaigas <i data-lucide="arrow-right"></i></a>
+                  </div>
+                </div>
+                <div class="family-stat__media" aria-hidden="true">
+                  <img data-asset="svietimo-istaigos-hero" alt="" />
+                </div>
+              </article>
+
+              <article class="family-stat" data-stat-index="2">
+                <div class="family-stat__content">
+                  <div class="family-stat__figure">
+                    <span class="family-stat__number">3</span>
+                    <span class="family-stat__unit">vieta</span>
+                  </div>
+                  <div class="family-stat__body">
+                    <p>Klaipėda – trečias pagal vidutinį darbo užmokestį miestas Lietuvoje.</p>
+                  </div>
+                </div>
+                <div class="family-stat__media" aria-hidden="true">
+                  <img data-asset="home-news-port" alt="" />
+                </div>
+              </article>
+
+              <article class="family-stat" data-stat-index="3">
+                <div class="family-stat__content">
+                  <div class="family-stat__figure">
+                    <span class="family-stat__number">11<span class="family-stat__suffix">%</span></span>
+                    <span class="family-stat__unit">pigiau</span>
+                  </div>
+                  <div class="family-stat__body">
+                    <p>Įperkamas būstas – Klaipėda išsiskiria vienu palankiausių būsto įperkamumo rodiklių Lietuvoje – vidutinės būsto kainos čia yra apie 11 % mažesnės nei Kaune ir beveik 60 % mažesnės nei Vilniuje.</p>
+                  </div>
+                </div>
+                <div class="family-stat__media" aria-hidden="true">
+                  <img data-asset="kur-apsistoti-hero" alt="" />
+                </div>
+              </article>
+
+              <article class="family-stat" data-stat-index="4">
+                <div class="family-stat__content">
+                  <div class="family-stat__figure">
+                    <span class="family-stat__number">UNESCO</span>
+                  </div>
+                  <div class="family-stat__body">
+                    <p>UNESCO paveldas – Kuršių nerija. Per kelias minutes keltu pasiekiama viena unikaliausių vietovių Europoje.</p>
+                  </div>
+                </div>
+                <div class="family-stat__media" aria-hidden="true">
+                  <img data-asset="attractions-top" alt="" />
+                </div>
+              </article>
+
+              <article class="family-stat" data-stat-index="5">
+                <div class="family-stat__content">
+                  <div class="family-stat__figure">
+                    <span class="family-stat__number">365</span>
+                    <span class="family-stat__unit">dienos</span>
+                  </div>
+                  <div class="family-stat__body">
+                    <p>Renginiai ištisus metus: Klaipėdoje šeimos laisvalaikis mėgsta improvizuoti: rytais dar įsivaizduojamas ramus savaitgalis, o vakarais visa šeima jau ploja teatre, aptarinėja parodas ar mojuoja minioje per Jūros šventę.</p>
+                    <a class="events-panel__all" href="/renginiai/">Žiūrėti renginius <i data-lucide="arrow-right"></i></a>
+                  </div>
+                </div>
+                <div class="family-stat__media" aria-hidden="true">
+                  <img data-asset="home-news-route" alt="" />
+                </div>
+              </article>
+
+              <article class="family-stat" data-stat-index="6">
+                <div class="family-stat__content">
+                  <div class="family-stat__figure">
+                    <span class="family-stat__number">50+</span>
+                    <span class="family-stat__unit">km takų</span>
+                  </div>
+                  <div class="family-stat__body">
+                    <p>50+ km dviračių takų: Kai mokykla, parkas ir pajūris susijungia dviračių takais, šeimos automobilis visai nepyksta likęs namuose.</p>
+                  </div>
+                </div>
+                <div class="family-stat__media" aria-hidden="true">
+                  <img data-asset="home-news-city" alt="" />
+                </div>
+              </article>
             </div>
           </div>
         </section>
 
-        <section id="gyvenamieji-rajonai" class="home-guide" data-wp-partial="template-parts/gyvenk/residential-areas.php">
-          <div class="home-guide__inner">
-            <div class="home-guide__intro">
-              <h2 data-acf-field="residential_title">Klaipėdos gyvenamieji rajonai</h2>
-              <p data-acf-field="residential_intro">
-                Klaipėda — miestas, kuriame kiekvienas rajonas turi savo charakterį. Nuo senamiestio grindinių iki modernių priemiesčių — čia kiekviena šeima randa savąjį ritmą.
+        <section class="family-districts" id="gyvenamieji-rajonai" data-district-explorer data-wp-partial="template-parts/gyvenk/residential-areas.php">
+          <div class="family-districts__inner">
+            <div class="family-districts__intro">
+              <h2>
+                Klaipėdos<br />
+                gyvenamieji rajonai
+              </h2>
+              <p>
+                Vienur rytas prasideda pasisveikinant su Anike Teatro aikštėje, kitur – žaliame kieme po pušimis prie kopų, o dar kitur iki mokyklos, parko ar parduotuvės nueini greičiau, nei spėji pasakyti „pasikiškekopūsteliaudamas“. Čia namus renkiesi ne vien pagal kvadratinius metrus, bet ir pagal ritmą, kuriuo norisi gyventi. Gerai, kad Klaipėda jų turi ne vieną.
               </p>
             </div>
+            <div class="family-districts__layout">
+              <div class="family-districts__map-wrap">
+                <div
+                  class="event-map family-districts__map"
+                  data-district-map
+                  data-district-map-bg-asset="districts-map-bg"
+                  aria-label="Klaipėdos gyvenamųjų rajonų žemėlapis"
+                >
+                  <div class="event-map__canvas" data-district-map-canvas></div>
+                  <div class="event-map__fallback">
+                    <span class="event-map__pin" aria-hidden="true"></span>
+                    <p>Klaipėdos gyvenamieji rajonai</p>
+                    <small>Žemėlapis bus aktyvus prijungus Google Maps API raktą.</small>
+                  </div>
+                  <div class="family-districts__legend" data-district-legend aria-label="Rajonų legenda">
+                    <button type="button" class="family-districts__legend-item is-active" data-district-trigger="senamiestis">
+                      <span class="family-districts__legend-swatch" aria-hidden="true"></span>
+                      Senamiestis
+                    </button>
+                    <button type="button" class="family-districts__legend-item" data-district-trigger="centras">
+                      <span class="family-districts__legend-swatch" aria-hidden="true"></span>
+                      Centras
+                    </button>
+                    <button type="button" class="family-districts__legend-item" data-district-trigger="pietine">
+                      <span class="family-districts__legend-swatch" aria-hidden="true"></span>
+                      Pietinė
+                    </button>
+                    <button type="button" class="family-districts__legend-item" data-district-trigger="siaurine">
+                      <span class="family-districts__legend-swatch" aria-hidden="true"></span>
+                      Šiaurinė
+                    </button>
+                    <button type="button" class="family-districts__legend-item" data-district-trigger="giruliai">
+                      <span class="family-districts__legend-swatch" aria-hidden="true"></span>
+                      Giruliai ir Melnragė
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-            <div class="home-guide__list" data-acf-repeater="residential_area_items">
-              <article class="home-guide-card">
-                <div class="home-guide-card__media home-guide-card__media--right-step">
-                  <img data-asset="home-guide-activity" alt="Klaipėdos senamiestis" />
-                </div>
-                <div class="home-guide-card__content">
-                  <h3>Senamiestis ir Naujamiestis</h3>
-                  <p>
-                    Istorinis miesto branduolys su brukliniais grindiniais, vokiškojo fachverko namais ir gyva kavinių kultūra. Geras pasirinkimas tiems, kurie nori gyventi viename žingsnyje nuo visko.
-                  </p>
-                  <a href="/gyvenk/">Sužinokite daugiau</a>
-                </div>
-              </article>
+              <div class="family-districts__panel">
+                <div class="family-districts__panels" data-acf-repeater="residential_area_items" aria-live="polite">
+                  <article class="family-districts__detail is-active" data-district-panel="senamiestis">
+                    <h3>Senamiestis</h3>
+                    <p>
+                      Klaipėdos senamiestis gyvena skirtingose laiko juostose vienu metu. Fachverko namų sienos šnabžda istorijas, languose šviečia šiandienos kavinukės, laukiančios svečių, o už kelių žingsnių pasitiks teatrai ir avangardinės parodos. Čia kultūra pinasi į kasdienį tavo maršrutą. O panorėjus daugiau erdvės, senamiestis šypteli ir veda tave link kelto: kelios minutės ir istorinį grindinį keičia Smiltynės dviračių takai, pušynai, smėlis ir jūra.
+                    </p>
+                  </article>
 
-              <article class="home-guide-card home-guide-card--reverse">
-                <div class="home-guide-card__content">
-                  <h3>Labrenciškiai ir Debrecenas</h3>
-                  <p>
-                    Ramūs, žali ir erdvūs rajonai šeimoms su vaikais. Čia gausu mokyklų, darželių ir parkų — tai vietos, kur vaikai auga saugiai, o gyvenimo tempas leidžia tikrai atsikvėpti.
-                  </p>
-                  <a href="/gyvenk/">Sužinokite daugiau</a>
-                </div>
-                <div class="home-guide-card__media home-guide-card__media--left-step">
-                  <img data-asset="home-guide-stay" alt="Labrenciškiai ir Debrecenas" />
-                </div>
-              </article>
+                  <article class="family-districts__detail" data-district-panel="centras" hidden>
+                    <h3>Centras</h3>
+                    <p>
+                      Miesto centras neturi vieno veido – ir gerai, tačiau atsilieps jį kviečiant ir Naujamiesčio vardu. Nuo stoties iki senamiesčio jis kalba senais namų fasadais, kavinių staliukais ir gatvelėmis, kurios apie miestą žino daugiau, nei išduoda. O už Senojo turgaus dinamika keičiasi: daugiau kasdienio judesio, gatvės platėja, mojuoja gyvenamieji kvartalai ir prekybos centrai.
+                    </p>
+                  </article>
 
-              <article class="home-guide-card">
-                <div class="home-guide-card__media home-guide-card__media--right-step">
-                  <img data-asset="home-guide-food" alt="Giruliai ir pajūrio rajonai" />
+                  <article class="family-districts__detail" data-district-panel="pietine" hidden>
+                    <h3>Pietinė miesto dalis</h3>
+                    <p>
+                      Pietinėje miesto dalyje karaliauja patogumas. Mokyklos, darželiai, didieji prekybos centrai ir paslaugos čia po ranka, tad daug reikalų galima sutvarkyti ir nerengiant ekspedicijos po miestą. Iki senamiesčio viešuoju transportu – apie 25 minutės, o grįžti vis maloniau: rajonai atsinaujina, žaliuoja nauji parkai, kiemai juokiasi kartu su vaikais ir buriasi kaimynystės. Tinka tiems, kurie nori viską turėti arti, bet namuose jaustis truputį toliau nuo miesto šurmulio.
+                    </p>
+                  </article>
+
+                  <article class="family-districts__detail" data-district-panel="siaurine" hidden>
+                    <h3>Šiaurinė miesto dalis</h3>
+                    <p>
+                      Šiaurinėje Klaipėdoje gyvenimas turi daugiau gamtos, daugiau kiemo ir, tikėtina, žoliapjovę, kuri vasarą tampa pilnaverte šeimos nare. Čia renkasi norintys nuosavo namo ir miško šalia, bet nenorintys dėl kiekvieno reikalo leistis į kelionę – mokyklos, darželiai, parduotuvės ir paslaugos lieka lengvai pasiekiami. Gyvenimas gali kainuoti kiek daugiau nei užmiestyje, tačiau mainais gauni retą prabangą – erdvę atsikvėpti ir miestą, kuris niekur nepradingo.
+                    </p>
+                  </article>
+
+                  <article class="family-districts__detail" data-district-panel="giruliai" hidden>
+                    <h3>Giruliai ir Melnragė</h3>
+                    <p>
+                      Čia gyvenimas vyksta tarsi tarp dviejų pasaulių: viename pušys sergėja namų ramybę, kitame nerūpestingas jūros žaismas ir skirtingi horizontai. Saulėlydžiai verti sustojimo, o žmonių juokas susimaišo su bangomis taip, kad ne visada aišku, kur baigiasi viena ir prasideda kita. Klaipėdiečiai sako, kad gerai įsiklausius vėjas atneša ir Jūratės juoką iš Gintaro rūmų. Gal todėl čia apsigyvenus po dienos be jūros jau pradedama neramiai žvilgčioti horizonto pusėn.
+                    </p>
+                  </article>
                 </div>
-                <div class="home-guide-card__content">
-                  <h3>Giruliai ir pajūrio rajonai</h3>
-                  <p>
-                    Pušynai, smėlio takai ir jūra pro langą. Šie rajonai traukia šeimas, kurioms gamta nėra savaitgalio pramoga — ji yra kasdienybė.
-                  </p>
-                  <a href="/gyvenk/">Sužinokite daugiau</a>
+
+                <div class="family-districts__controls" aria-label="Rajonų navigacija">
+                  <button type="button" aria-label="Ankstesnis rajonas" data-district-prev>
+                    <i data-lucide="chevron-left"></i>
+                  </button>
+                  <button type="button" aria-label="Kitas rajonas" data-district-next>
+                    <i data-lucide="chevron-right"></i>
+                  </button>
                 </div>
-              </article>
+              </div>
             </div>
           </div>
         </section>
 
-        <section class="about-history" data-wp-partial="template-parts/gyvenk/leisure.php">
-          <div class="about-history__inner" data-acf-repeater="leisure_sections">
-            <article class="about-history-row">
-              <div class="about-history-row__title">
-                <h2>Laisvalaikio užsiėmimai</h2>
-              </div>
-              <div class="about-history-row__content">
-                <p>Klaipėda siūlo platų laisvalaikio užsiėmimų spektrą visai šeimai. Sporto klubai, baseinas, dviračių takai, kūrybinės studijos, gamtos pažintiniai takai ir paplūdimiai — viskas pasiekiama per keliolika minučių nuo bet kurio miesto rajono.</p>
-                <p>Mieste veikia daugiau nei 50 sporto ir laisvalaikio centrų. Vaikai gali rinktis iš muzikos mokyklų, meno studijų, šokių ir kovos menų sekcijų, o tėvai — iš jūrinio sporto, bėgimo klubų ir jogos.</p>
-                <p><strong>Klaipėdoje laisvalaikis nėra savaitgalio reikalas — jis prasideda tiesiai po darbo ar mokyklos.</strong></p>
-                <a href="/ka-veikti-savaitgaliu/" class="events-panel__all">Visi laisvalaikio užsiėmimai <i data-lucide="arrow-right"></i></a>
-              </div>
-            </article>
+        <section class="home-guide" data-wp-partial="template-parts/sections/home-guide.php">
+          <div class="home-guide__inner">
+            <div class="home-guide__list" data-acf-repeater="home_guide_items">
+              <article class="home-guide-card" id="laisvalaikis">
+                <div class="home-guide-card__media home-guide-card__media--right-step">
+                  <img data-asset="home-guide-activity" alt="Judėjimas mieste" />
+                </div>
+                <div class="home-guide-card__content">
+                  <h3>Laisvalaikio užsiėmimai</h3>
+                  <p>
+                    Klaipėdoje laisvalaikis prasideda vos pasibaigus pamokoms ir darbams: vieni renkasi baseiną, muziką, šokius ar kovos menus, kiti – bėgimą, irklavimą ar jogos kilimėlį. Daugiau nei 50 sporto ir laisvalaikio centrų, kūrybinės studijos, pažintiniai takai ir paplūdimiai – viskas per kelias minutes nuo bet kurio rajono. Todėl dažniausiai tenka ne spręsti, ką veikti, o kaip visus norus sutalpinti į vieną vakarą.
+                  </p>
+                  <p>
+                    Klaipėdoje laisvalaikis prasideda vos pasibaigus dienos pareigoms – belieka nuspręsti, kur šiandien nuves smalsumas.
+                  </p>
+                  <a href="/ka-veikti-laisvalaikiu/">Žiūrėti laisvalaikio užsiėmimus</a>
+                </div>
+              </article>
 
-            <article class="about-history-row">
-              <div class="about-history-row__title">
-                <h2>Švietimo įstaigos</h2>
-              </div>
-              <div class="about-history-row__content">
-                <p>Klaipėdoje veikia daugiau nei 30 bendrojo ugdymo mokyklų, kelios dešimtys darželių ir du universitetai — Klaipėdos universitetas ir Lietuvos aukštoji jūreivystės mokykla. Visas mokymosi kelias — nuo pirmosios klasės iki bakalauro — įmanomas neišvykus iš miesto.</p>
-                <p>Mieste taip pat veikia muzikos, meno ir sporto mokyklos, leidžiančios vaikams augti visapusiškai. Nemažai mokyklų siūlo tarptautines programas ir dvikalbį ugdymą.</p>
-                <p><strong>Klaipėda — miestas, kuriame vaikų ateitis pradedama kurti jau darželyje.</strong></p>
-                <a href="/gyvenk/svietimo-istaigos/" class="events-panel__all">Visos švietimo įstaigos <i data-lucide="arrow-right"></i></a>
-              </div>
-            </article>
+              <article class="home-guide-card home-guide-card--reverse" id="svietimas">
+                <div class="home-guide-card__content">
+                  <h3>Švietimo įstaigos</h3>
+                  <p>
+                    Klaipėdoje mokymosi kelias prasideda nuo pirmojo piešinuko darželyje ir gali tęstis iki universiteto auditorijos – lagaminas pasiliks po lova. Mieste veikia daugiau nei 30 bendrojo ugdymo mokyklų, kelios dešimtys darželių, du universitetai – Klaipėdos universitetas ir LCC ir vienintelė Lietuvoje – VILNIUS TECH Jūreivystės akademija. Taip pat vaikams atrasti savąją kryptį padeda muzikos, meno ir sporto mokyklos, o tarptautinės programos ir dvikalbis ugdymas atveria dar daugiau galimybių. Klaipėda bendradarbiauja su ateitimi – ji kas rytą pati uždės kuprinę ant pečių.
+                  </p>
+                  <a href="/gyvenk/svietimo-istaigos/">Žiūrėti švietimo įstaigas</a>
+                </div>
+                <div class="home-guide-card__media home-guide-card__media--left-step">
+                  <img data-asset="svietimo-istaigos-hero" alt="Mokiniai Klaipėdoje" />
+                </div>
+              </article>
+            </div>
           </div>
         </section>
       </main>

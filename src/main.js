@@ -70,6 +70,7 @@ import svietimoIstaigos1 from "./assets/svietimo-istaigos-1.png";
 import svietimoIstaigos2 from "./assets/svietimo-istaigos-2.png";
 import svietimoIstaigos3 from "./assets/svietimo-istaigos-3.jpg";
 import svietimoIstaigosHero from "./assets/svietimo-istaigos-hero.png";
+import districtsMapBg from "./assets/figma-district-map-bg.png";
 
 const assetMap = {
   "attractions-top": attractionsTop,
@@ -138,6 +139,7 @@ const assetMap = {
   "svietimo-istaigos-2": svietimoIstaigos2,
   "svietimo-istaigos-3": svietimoIstaigos3,
   "svietimo-istaigos-hero": svietimoIstaigosHero,
+  "districts-map-bg": districtsMapBg,
   "news-muge": newsMuge,
   "news-nepramiegok": newsNepramiegok,
   "aitvaru-festivalis": aitvaru,
@@ -149,6 +151,15 @@ document.querySelectorAll("[data-asset]").forEach((element) => {
 
   if (assetValue) {
     element.setAttribute("src", assetValue);
+  }
+});
+
+// Resolve data-district-map-bg-asset → data-district-map-bg with hashed Vite URL
+document.querySelectorAll("[data-district-map-bg-asset]").forEach((element) => {
+  const key = element.getAttribute("data-district-map-bg-asset");
+  const url = assetMap[key];
+  if (url) {
+    element.setAttribute("data-district-map-bg", url);
   }
 });
 
