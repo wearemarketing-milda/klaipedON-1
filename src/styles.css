@@ -3109,6 +3109,14 @@
     aspect-ratio: 2131 / 1598;
   }
 
+  .family-districts__map .district-map__bg {
+    pointer-events: none;
+  }
+
+  .family-districts__map .district-map__region {
+    outline: none;
+  }
+
   .family-districts__map .district-map__hit {
     fill: transparent;
     cursor: pointer;
@@ -3116,37 +3124,48 @@
   }
 
   .family-districts__map .district-map__hit:focus-visible {
-    fill: #1d4f91;
-    fill-opacity: 0.12;
+    fill: var(--color-day);
+    fill-opacity: 0.14;
   }
 
   .family-districts__map .district-map__outline {
     fill: none;
-    stroke: var(--color-night);
-    stroke-opacity: 0.45;
-    stroke-width: 2;
+    stroke: var(--color-dusk);
+    stroke-opacity: 0.4;
+    stroke-width: 1.75;
     pointer-events: none;
     transition:
-      stroke 0.3s ease,
-      stroke-opacity 0.3s ease,
-      stroke-width 0.3s ease;
+      stroke 0.3s var(--ease-soft),
+      stroke-opacity 0.3s var(--ease-soft),
+      stroke-width 0.3s var(--ease-soft);
   }
 
-  .family-districts__map .district-map__outline.is-active {
-    stroke: #1d4f91;
-    stroke-opacity: 0.6;
+  .family-districts__map .district-map__region:hover .district-map__outline {
+    stroke: var(--color-day);
+    stroke-opacity: 0.7;
+  }
+
+  .family-districts__map .district-map__outline.is-active,
+  .family-districts__map .district-map__region.is-active .district-map__outline {
+    stroke: var(--color-day);
+    stroke-opacity: 1;
     stroke-width: 3;
   }
 
   .family-districts__map .district-map__tint {
-    fill: #1d4f91;
-    fill-opacity: 0.1;
+    fill: var(--color-day);
+    fill-opacity: 0.12;
     pointer-events: none;
-    transition: fill-opacity 0.35s ease;
+    transition: fill-opacity 0.35s var(--ease-soft);
   }
 
-  .family-districts__map .district-map__tint.is-active {
+  .family-districts__map .district-map__region:hover .district-map__tint {
     fill-opacity: 0.2;
+  }
+
+  .family-districts__map .district-map__tint.is-active,
+  .family-districts__map .district-map__region.is-active .district-map__tint {
+    fill-opacity: 0.32;
   }
 
   .family-districts__legend {
@@ -6544,6 +6563,61 @@
     padding-top: 1rem;
   }
 
+  /* Stacked layout: keep legend under the map so it never covers districts */
+  .family-districts__map-wrap {
+    aspect-ratio: auto;
+    overflow: visible;
+  }
+
+  .family-districts__map.event-map {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .family-districts__map .event-map__canvas {
+    width: 100%;
+  }
+
+  .family-districts__map .district-map-svg {
+    aspect-ratio: 2131 / 1598;
+  }
+
+  .family-districts__legend {
+    position: static;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    z-index: auto;
+    width: 100%;
+    max-width: none;
+    margin-top: 0;
+    padding: 0.85rem 0.85rem 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .family-districts__legend-item {
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba(7, 26, 68, 0.14);
+    background: var(--color-paper);
+    color: rgba(7, 26, 68, 0.78);
+    font-size: 0.78rem;
+    line-height: 1.2;
+  }
+
+  .family-districts__legend-item.is-active {
+    border-color: var(--color-day);
+    background: var(--color-soft-blue);
+    color: var(--color-night);
+  }
+
   .events-archive {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -7284,15 +7358,6 @@
 
   .family-districts__intro p {
     max-width: 52rem;
-  }
-
-  .family-districts__legend {
-    top: auto;
-    right: 0.75rem;
-    bottom: 0.75rem;
-    left: 0.75rem;
-    width: auto;
-    padding: 0.75rem;
   }
 
   .family-stat {

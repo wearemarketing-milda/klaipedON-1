@@ -70,7 +70,7 @@ import svietimoIstaigos1 from "./assets/svietimo-istaigos-1.png";
 import svietimoIstaigos2 from "./assets/svietimo-istaigos-2.png";
 import svietimoIstaigos3 from "./assets/svietimo-istaigos-3.jpg";
 import svietimoIstaigosHero from "./assets/svietimo-istaigos-hero.png";
-import districtsMapBg from "./assets/figma-district-map-bg.png";
+import districtsMapBg from "./assets/klp-map-bg.png";
 
 const assetMap = {
   "attractions-top": attractionsTop,

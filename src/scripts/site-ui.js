@@ -1,5 +1,6 @@
 import {
-  MAP_IMAGE_SIZE,
+  MAP_BG_RECT,
+  MAP_VIEWBOX,
   familyDistrictOrder,
   familyDistricts,
   familyDistrictStyles,
@@ -1254,13 +1255,9 @@ export function initSiteUI() {
         return;
       }
 
-      // 2) SVG fallback: Figma background + our 5 district polygons
-      // (Figma node contains the background and one active styling example; we still draw all districts from our ids.)
+      // 2) SVG map: cleaned klp-map geometry (multi-path districts) + background photo
       const SVG_NS = "http://www.w3.org/2000/svg";
-      const vbX = 0;
-      const vbY = 0;
-      const vbW = MAP_IMAGE_SIZE.width;
-      const vbH = MAP_IMAGE_SIZE.height;
+      const { x: vbX, y: vbY, width: vbW, height: vbH } = MAP_VIEWBOX;
 
       const svg = document.createElementNS(SVG_NS, "svg");
       svg.setAttribute("viewBox", `${vbX} ${vbY} ${vbW} ${vbH}`);
@@ -1276,52 +1273,74 @@ export function initSiteUI() {
         const bgImage = document.createElementNS(SVG_NS, "image");
         bgImage.setAttribute("href", bgUrl);
         bgImage.setAttributeNS("http://www.w3.org/1999/xlink", "href", bgUrl);
-        bgImage.setAttribute("x", "0");
-        bgImage.setAttribute("y", "0");
-        bgImage.setAttribute("width", String(MAP_IMAGE_SIZE.width));
-        bgImage.setAttribute("height", String(MAP_IMAGE_SIZE.height));
-        bgImage.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        bgImage.setAttribute("x", String(MAP_BG_RECT.x));
+        bgImage.setAttribute("y", String(MAP_BG_RECT.y));
+        bgImage.setAttribute("width", String(MAP_BG_RECT.width));
+        bgImage.setAttribute("height", String(MAP_BG_RECT.height));
+        bgImage.setAttribute("preserveAspectRatio", "none");
+        bgImage.classList.add("district-map__bg");
         svg.appendChild(bgImage);
       }
 
+      /** @type {Map<string, SVGElement[]>} */
       const tints = new Map();
+      /** @type {Map<string, SVGElement[]>} */
       const outlines = new Map();
+      /** @type {Map<string, SVGElement>} */
+      const groups = new Map();
 
       familyDistricts.forEach((district) => {
-        if (!district.svgD) return;
+        const pathList = district.svgPaths?.length
+          ? district.svgPaths
+          : district.svgD
+            ? [district.svgD]
+            : [];
+
+        if (!pathList.length) return;
 
         const group = document.createElementNS(SVG_NS, "g");
+        group.setAttribute("data-district-region", district.id);
+        group.classList.add("district-map__region");
 
-        const hit = document.createElementNS(SVG_NS, "path");
-        hit.setAttribute("d", district.svgD);
-        hit.setAttribute("class", "district-map__hit");
-        hit.setAttribute("role", "button");
-        hit.setAttribute("tabindex", "0");
-        hit.setAttribute("aria-label", district.name);
-        hit.addEventListener("click", () => setDistrict(district.id));
-        hit.addEventListener("keydown", (e) => {
-          if (e.key !== "Enter" && e.key !== " ") return;
-          e.preventDefault();
-          setDistrict(district.id);
+        const districtTints = [];
+        const districtOutlines = [];
+
+        pathList.forEach((pathD, pathIndex) => {
+          const hit = document.createElementNS(SVG_NS, "path");
+          hit.setAttribute("d", pathD);
+          hit.setAttribute("class", "district-map__hit");
+          hit.setAttribute("role", "button");
+          hit.setAttribute("tabindex", pathIndex === 0 ? "0" : "-1");
+          hit.setAttribute("aria-label", district.name);
+          hit.addEventListener("click", () => setDistrict(district.id));
+          hit.addEventListener("keydown", (e) => {
+            if (e.key !== "Enter" && e.key !== " ") return;
+            e.preventDefault();
+            setDistrict(district.id);
+          });
+
+          const tint = document.createElementNS(SVG_NS, "path");
+          tint.setAttribute("d", pathD);
+          tint.setAttribute("class", "district-map__tint");
+
+          const outline = document.createElementNS(SVG_NS, "path");
+          outline.setAttribute("d", pathD);
+          outline.setAttribute("class", "district-map__outline");
+
+          group.append(hit, tint, outline);
+          districtTints.push(tint);
+          districtOutlines.push(outline);
         });
 
-        const tint = document.createElementNS(SVG_NS, "path");
-        tint.setAttribute("d", district.svgD);
-        tint.setAttribute("class", "district-map__tint");
-
-        const outline = document.createElementNS(SVG_NS, "path");
-        outline.setAttribute("d", district.svgD);
-        outline.setAttribute("class", "district-map__outline");
-
-        group.append(hit, tint, outline);
         svg.appendChild(group);
-
-        tints.set(district.id, tint);
-        outlines.set(district.id, outline);
+        groups.set(district.id, group);
+        tints.set(district.id, districtTints);
+        outlines.set(district.id, districtOutlines);
       });
 
       explorer.__districtSvg = {
         spotHole: null,
+        groups,
         tints,
         outlines,
       };
@@ -1438,11 +1457,17 @@ export function initSiteUI() {
           districtSvg.spotHole.setAttribute("d", activeDistrict.svgD);
         }
 
-        districtSvg.tints.forEach((el, id) => {
-          el.classList.toggle("is-active", id === districtId);
+        districtSvg.groups?.forEach((group, id) => {
+          group.classList.toggle("is-active", id === districtId);
         });
-        districtSvg.outlines.forEach((el, id) => {
-          el.classList.toggle("is-active", id === districtId);
+
+        districtSvg.tints.forEach((els, id) => {
+          const list = Array.isArray(els) ? els : [els];
+          list.forEach((el) => el.classList.toggle("is-active", id === districtId));
+        });
+        districtSvg.outlines.forEach((els, id) => {
+          const list = Array.isArray(els) ? els : [els];
+          list.forEach((el) => el.classList.toggle("is-active", id === districtId));
         });
       }
     };
