@@ -63,6 +63,10 @@ const crumbTitles = {
 
 const consultantEmail = "tic@klaipedainfo.lt";
 
+const places = {
+  "danės g. 8": { lat: "55.714357", lng: "21.144193" },
+};
+
 const readSummary = (summary) => {
   const source = summary.trim();
   const mapUrl = source.match(/https?:\/\/\S+/)?.[0] ?? "";
@@ -149,6 +153,35 @@ const experienceRows = (item, details) => {
     included ? ["check", "Įskaičiuota", escapeHtml(included)] : "",
     place ? ["map-pin", "Vieta", place] : "",
   ].filter(Boolean);
+};
+
+const mapMarkup = (details) => {
+  const coords = places[details.location.toLocaleLowerCase("lt")];
+
+  if (!coords) {
+    return "";
+  }
+
+  const label = `${details.location}, Klaipėda`;
+
+  return `
+    <div
+      class="event-map shop-product__map"
+      aria-label="${escapeHtml(label)} Google Maps žemėlapyje"
+      data-google-map
+      data-map-lat="${coords.lat}"
+      data-map-lng="${coords.lng}"
+      data-map-zoom="15"
+      data-map-title="${escapeHtml(details.location)}"
+    >
+      <div class="event-map__canvas" data-google-map-canvas></div>
+      <div class="event-map__fallback">
+        <span class="event-map__pin">${escapeHtml(details.location)}</span>
+        <p>${escapeHtml(label)}</p>
+        <small>Google Maps įsijungs įdėjus API raktą.</small>
+      </div>
+    </div>
+  `;
 };
 
 const quantityMarkup = () => `
@@ -264,6 +297,7 @@ const renderProductPage = (product) => {
           </div>
         </aside>
         ${isLongCopy ? `<article class="event-detail-copy" data-acf-field="product_description"><h2>${item.kind === "experience" ? "Apie ekskursiją" : item.kind === "rental" ? "Apie nuomą" : "Apie prekę"}</h2>${paragraphs(body).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}</article>` : ""}
+        ${item.kind === "experience" ? mapMarkup(details) : ""}
       </div>
     </section>
     ${related.length ? `

@@ -7837,6 +7837,16 @@
   aspect-ratio: 1 / 1;
 }
 
+.shop-product .event-detail-copy {
+  grid-row: 2;
+}
+
+.shop-product__map {
+  grid-column: 1;
+  grid-row: 3;
+  width: 100%;
+}
+
 .shop-product__price {
   margin: 0;
   color: var(--color-night);
@@ -8040,6 +8050,11 @@
 }
 
 @media (max-width: 1100px) {
+  .shop-product .event-detail-copy,
+  .shop-product__map {
+    grid-row: auto;
+  }
+
   main[data-shop-product]:has(.shop-product__bar) {
     padding-bottom: 9.5rem;
   }
