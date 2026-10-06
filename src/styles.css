@@ -8981,6 +8981,10 @@ html.is-shop-cart-open body {
   gap: 0.9rem 1rem;
 }
 
+.checkout__names {
+  display: contents;
+}
+
 .checkout__field {
   display: grid;
   gap: 0.7rem;
@@ -9699,6 +9703,13 @@ html.is-shop-cart-open body {
   .checkout__grid,
   .checkout__pay-list {
     grid-template-columns: 1fr;
+  }
+
+  .checkout__names {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem 1rem;
   }
 }
 

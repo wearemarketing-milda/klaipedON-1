@@ -278,6 +278,18 @@
               <p class="checkout__hint" data-checkout-contact-note>Sąskaitą ir patvirtinimą atsiųsime šiuo el. paštu. Apie siuntą pranešime telefonu.</p>
               <p class="checkout__hint" data-checkout-experience-note hidden>Ekskursijos patvirtinimą atsiųsime šiuo el. paštu.</p>
               <div class="checkout__grid">
+                <div class="checkout__names">
+                  <label class="checkout__field">
+                    <span>Vardas</span>
+                    <input id="checkout-first" name="firstName" type="text" autocomplete="given-name" required aria-describedby="checkout-first-error" />
+                    <p class="checkout__error" id="checkout-first-error" hidden></p>
+                  </label>
+                  <label class="checkout__field">
+                    <span>Pavardė</span>
+                    <input id="checkout-last" name="lastName" type="text" autocomplete="family-name" required aria-describedby="checkout-last-error" />
+                    <p class="checkout__error" id="checkout-last-error" hidden></p>
+                  </label>
+                </div>
                 <label class="checkout__field">
                   <span>El. paštas</span>
                   <input id="checkout-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="checkout-email-error" />
@@ -287,16 +299,6 @@
                   <span>Telefonas</span>
                   <input id="checkout-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="checkout-phone-error" />
                   <p class="checkout__error" id="checkout-phone-error" hidden></p>
-                </label>
-                <label class="checkout__field">
-                  <span>Vardas</span>
-                  <input id="checkout-first" name="firstName" type="text" autocomplete="given-name" required aria-describedby="checkout-first-error" />
-                  <p class="checkout__error" id="checkout-first-error" hidden></p>
-                </label>
-                <label class="checkout__field">
-                  <span>Pavardė</span>
-                  <input id="checkout-last" name="lastName" type="text" autocomplete="family-name" required aria-describedby="checkout-last-error" />
-                  <p class="checkout__error" id="checkout-last-error" hidden></p>
                 </label>
               </div>
             </section>
