@@ -195,17 +195,21 @@ const dateMarkup = (item) => {
     return "";
   }
 
+  const visibleCount = 5;
+  const more = item.dates.length > visibleCount;
+
   return `
     <div class="shop-product__dates">
       <p>Data</p>
       <div role="radiogroup" aria-label="Ekskursijos data">
         ${item.dates.map((date, index) => `
-          <label>
+          <label ${index >= visibleCount ? "hidden" : ""}>
             <input type="radio" name="experience-date" value="${escapeHtml(date.id)}" data-shop-date ${index === 0 ? "checked" : ""} />
             <span>${escapeHtml(date.label)}</span>
           </label>
         `).join("")}
       </div>
+      ${more ? `<button type="button" data-shop-dates-more aria-expanded="false">Rodyti daugiau</button>` : ""}
     </div>
   `;
 };
@@ -224,7 +228,22 @@ const actionMarkup = (item) => {
 };
 
 const shirtSizes = {
-  "balti-marskineliai-su-neptuno-herbu": ["XXL"],
+  "balti-marskineliai-su-neptuno-herbu": ["S", "M", "L", "XL", "XXL"],
+};
+
+const shirtColors = {
+  "balti-marskineliai-su-neptuno-herbu": ["Balta", "Mėlyna", "Juoda"],
+};
+
+const choiceMarkup = (label, name, values, selected) => {
+  const options = values.map((value) => `
+    <label>
+      <input type="radio" name="${name}" value="${escapeHtml(value)}" ${value === selected ? "checked" : ""} />
+      ${escapeHtml(value)}
+    </label>
+  `).join("");
+
+  return `<div class="shop-product__variants"><p>${escapeHtml(label)}</p><div role="radiogroup" aria-label="${escapeHtml(label)}">${options}</div></div>`;
 };
 
 const shirtSizeMarkup = (item) => {
@@ -234,9 +253,21 @@ const shirtSizeMarkup = (item) => {
     return "";
   }
 
-  const options = sizes.map((size) => `<span aria-current="true">${escapeHtml(size)}</span>`).join("");
+  const selected = sizes.includes("M") ? "M" : sizes[Math.floor((sizes.length - 1) / 2)];
 
-  return `<div class="shop-product__variants"><p>Dydis</p><div role="group" aria-label="Dydis">${options}</div></div>`;
+  return choiceMarkup("Dydis", "shirt-size", sizes, selected);
+};
+
+const shirtColorMarkup = (item) => {
+  const colors = Object.entries(shirtColors).find(([slug]) => sameSlug(slug, item.slug))?.[1];
+
+  if (!colors?.length) {
+    return "";
+  }
+
+  const selected = colors.includes("Balta") ? "Balta" : colors[0];
+
+  return choiceMarkup("Spalva", "shirt-color", colors, selected);
 };
 
 const variantMarkup = (item) => {
@@ -267,11 +298,14 @@ const renderProductPage = (product) => {
   const body = item.kind === "rental" ? rentalBody(details.text) : details.text;
   const isLongCopy = body.length > 160;
   const sizeMarkup = shirtSizeMarkup(item);
+  const colorMarkup = shirtColorMarkup(item);
   const facts = (catalogFacts[item.slug] || Object.entries(catalogFacts).find(([slug]) => sameSlug(slug, item.slug))?.[1] || [])
-    .filter((fact) => !(sizeMarkup && /^dydis\b/i.test(fact)));
+    .filter((fact) => !(sizeMarkup && /^dydis\b/i.test(fact)))
+    .filter((fact) => !(colorMarkup && /^spalv/i.test(fact)));
   const noteRepeatsFact = facts.length > 0 && body.length < 48 && /dydis|spalv|dydž/i.test(body);
   const noteRepeatsSize = Boolean(sizeMarkup) && body.length < 48 && /^dydis\b/i.test(body);
-  const showNote = item.kind === "goods" && !isLongCopy && body && !noteRepeatsFact && !noteRepeatsSize;
+  const noteRepeatsColor = Boolean(colorMarkup) && body.length < 48 && /^spalv/i.test(body);
+  const showNote = item.kind === "goods" && !isLongCopy && body && !noteRepeatsFact && !noteRepeatsSize && !noteRepeatsColor;
   const rate = item.kind === "rental" ? rentalRate(item.summary || "") : "";
   const context = item.kind === "rental"
     ? `${rate ? `${rate}. ` : ""}Dėl nuomos parašykite Klaipėdos TIC konsultantui.`
@@ -312,6 +346,7 @@ const renderProductPage = (product) => {
           ${context ? `<p class="shop-product__context">${escapeHtml(context)}</p>` : ""}
           ${facts.length ? `<p class="shop-product__facts">${facts.map((fact) => escapeHtml(fact)).join("<br>")}</p>` : ""}
           ${sizeMarkup}
+          ${colorMarkup}
           ${variantMarkup(item)}
           ${dateMarkup(item)}
           ${meta ? `<dl class="event-detail-meta">${meta}</dl>` : ""}
@@ -408,6 +443,28 @@ const bindPurchase = (root) => {
   paint();
 };
 
+const bindDates = (root) => {
+  const more = root.querySelector("[data-shop-dates-more]");
+  const labels = [...root.querySelectorAll(".shop-product__dates label")];
+
+  if (!more || labels.length <= 5) {
+    return;
+  }
+
+  const paint = (open) => {
+    labels.forEach((label, index) => {
+      const selected = label.querySelector("input")?.checked;
+      label.hidden = !open && index >= 5 && !selected;
+    });
+    more.setAttribute("aria-expanded", String(open));
+    more.textContent = open ? "Rodyti mažiau" : "Rodyti daugiau";
+  };
+
+  more.addEventListener("click", () => {
+    paint(more.getAttribute("aria-expanded") !== "true");
+  });
+};
+
 export const renderProduct = () => {
   const root = document.querySelector("[data-shop-product]");
 
@@ -418,4 +475,5 @@ export const renderProduct = () => {
   const product = shopProducts.find((entry) => sameSlug(entry.slug, productSlug()));
   root.innerHTML = product ? renderProductPage(product) : renderMissing();
   bindPurchase(root);
+  bindDates(root);
 };
