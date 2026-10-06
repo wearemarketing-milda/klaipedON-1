@@ -7,7 +7,16 @@ export const shopProducts = [
     "category": "Ekskursijos",
     "categorySlug": "ekskursijos",
     "dates": [
-      { "id": "2026-10-15-18", "label": "Spalio 15 d., 18:00" }
+      { "id": "2026-10-15-18", "label": "Spalio 15 d., 18:00" },
+      { "id": "2026-10-22-18", "label": "Spalio 22 d., 18:00" },
+      { "id": "2026-10-29-16", "label": "Spalio 29 d., 16:00" },
+      { "id": "2026-11-05-18", "label": "Lapkričio 5 d., 18:00" },
+      { "id": "2026-11-12-18", "label": "Lapkričio 12 d., 18:00" },
+      { "id": "2026-11-19-17", "label": "Lapkričio 19 d., 17:00" },
+      { "id": "2026-11-26-18", "label": "Lapkričio 26 d., 18:00" },
+      { "id": "2026-12-03-18", "label": "Gruodžio 3 d., 18:00" },
+      { "id": "2026-12-10-16", "label": "Gruodžio 10 d., 16:00" },
+      { "id": "2026-12-17-18", "label": "Gruodžio 17 d., 18:00" }
     ],
     "price": 32.0,
     "priceLabel": "32 €",
