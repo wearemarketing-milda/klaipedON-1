@@ -290,6 +290,45 @@ const shirtColorMarkup = (item) => {
   return `<div class="shop-product__variants shop-product__colors"><p>Spalva</p><div role="radiogroup" aria-label="Spalva">${options}</div></div>`;
 };
 
+const shirtDetailMarkup = (item) => {
+  if (!sameSlug(item.slug, "balti-marskineliai-su-neptuno-herbu")) {
+    return "";
+  }
+
+  return `
+    <div class="shop-product__detail">
+      <button type="button" data-shop-detail aria-expanded="false" aria-controls="shop-shirt-detail">
+        <span>Daugiau apie marškinėlius</span>
+        <i data-lucide="chevron-down"></i>
+      </button>
+      <div id="shop-shirt-detail" class="shop-product__detail-panel" hidden>
+        <dl>
+          <div>
+            <dt>Audinys</dt>
+            <dd>100 % medvilnė, apie 180 g/m². Audinys tankus, nelimpa prie kūno ir po skalbimo išlaiko formą.</dd>
+          </div>
+          <div>
+            <dt>Kirpimas</dt>
+            <dd>Tiesus kirpimas, apvali iškirptė, trumpos rankovės. Dydžiai nuo S iki XXL. Medvilnė po pirmo skalbimo šiek tiek susitraukia, todėl tarp dviejų dydžių geriau imti didesnį.</dd>
+          </div>
+          <div>
+            <dt>Spauda</dt>
+            <dd>Ant krūtinės – Neptūno krepšinio klubo herbas. Spauda plokščia. Spalvos: balta, mėlyna ir juoda, herbas ant visų vienodas.</dd>
+          </div>
+          <div>
+            <dt>Priežiūra</dt>
+            <dd>Skalbkite iki 30 °C, išvirkščiąja puse, be baliklio. Nedžiovinkite būgne. Lyginkite išvirkščiąja puse, ne per patį herbą.</dd>
+          </div>
+          <div>
+            <dt>Kilmė</dt>
+            <dd>Marškinėlius parduoda VšĮ Klaipėdos turizmo informacijos centras. Ant jų – Klaipėdos krepšinio klubo „Neptūnas“ herbas.</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  `;
+};
+
 const variantMarkup = (item) => {
   const family = families.find((group) => group.some((entry) => sameSlug(entry, "kuprine")) && group.some((entry) => sameSlug(entry, item.slug)));
 
@@ -388,6 +427,7 @@ const renderProductPage = (product) => {
             <a href="/" aria-label="Dalintis preke"><i data-lucide="share-2"></i></a>
             <a href="/" aria-label="Kopijuoti nuorodą"><i data-lucide="copy"></i></a>
           </div>
+          ${shirtDetailMarkup(item)}
         </aside>
         ${isLongCopy ? `<article class="event-detail-copy" data-acf-field="product_description"><h2>${item.kind === "experience" ? "Apie ekskursiją" : item.kind === "rental" ? "Apie nuomą" : "Apie prekę"}</h2>${paragraphs(body).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}</article>` : ""}
         ${item.kind === "experience" ? mapMarkup(details) : ""}
@@ -480,6 +520,21 @@ const bindShirtColor = (root) => {
   });
 };
 
+const bindShirtDetail = (root) => {
+  const trigger = root.querySelector("[data-shop-detail]");
+  const panel = trigger ? root.querySelector(`#${trigger.getAttribute("aria-controls")}`) : null;
+
+  if (!trigger || !panel) {
+    return;
+  }
+
+  trigger.addEventListener("click", () => {
+    const open = trigger.getAttribute("aria-expanded") !== "true";
+    trigger.setAttribute("aria-expanded", String(open));
+    panel.hidden = !open;
+  });
+};
+
 const bindDates = (root) => {
   const more = root.querySelector("[data-shop-dates-more]");
   const labels = [...root.querySelectorAll(".shop-product__dates label")];
@@ -513,5 +568,6 @@ export const renderProduct = () => {
   root.innerHTML = product ? renderProductPage(product) : renderMissing();
   bindPurchase(root);
   bindShirtColor(root);
+  bindShirtDetail(root);
   bindDates(root);
 };
