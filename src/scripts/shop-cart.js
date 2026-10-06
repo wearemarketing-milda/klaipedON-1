@@ -1,6 +1,6 @@
 import { shopProducts } from "../data/shop-products.js";
 import { relatedProducts } from "./shop-product.js";
-import { presentProduct, productUrl } from "./shop.js";
+import { formatShopMoney, presentProduct, productUrl } from "./shop.js";
 
 const storageKey = "klaipedon-shop-cart";
 const shirtSlug = "balti-marskineliai-su-neptuno-herbu";
@@ -58,13 +58,7 @@ const countLabel = (count) => {
   return `${count} prekių`;
 };
 
-const money = (value) => {
-  const amount = Math.round(Number(value) * 100);
-  const euros = Math.trunc(amount / 100);
-  const cents = Math.abs(amount % 100);
-
-  return cents ? `${euros},${String(cents).padStart(2, "0")} €` : `${euros} €`;
-};
+const money = formatShopMoney;
 
 const loadCart = () => {
   try {
@@ -420,7 +414,7 @@ export const initShopCart = () => {
         <div class="shop-cart__total">
           <div class="shop-cart__sum">
             <span>Viso</span>
-            <strong data-shop-cart-total>0 €</strong>
+            <strong data-shop-cart-total>0,00 €</strong>
           </div>
           <p class="shop-cart__note" data-shop-cart-note>Kainos su PVM. Pristatymą ir nuolaidą rasite atsiskaitydami.</p>
         </div>

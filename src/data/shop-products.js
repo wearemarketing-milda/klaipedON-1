@@ -270,7 +270,7 @@ export const shopProducts = [
     "id": 13579,
     "slug": "nesiojama-garso-sistema",
     "name": "Nešiojama garso sistema",
-    "summary": "IBIZA Sound PORT12UHF-BT nešiojama garso sistema su akumuliatoriumi, 2 bevieliais UHF mikrofonais ir FM imtuvu. Dėl šio produkto nuomos bendrauti asmeniškai su Klaipėdos TIC konsultantu. Kaina – 30 € / para.",
+    "summary": "IBIZA Sound PORT12UHF-BT nešiojama garso sistema su akumuliatoriumi, 2 bevieliais UHF mikrofonais ir FM imtuvu. Dėl šio produkto nuomos bendrauti asmeniškai su Klaipėdos TIC konsultantu. Kaina – 30,00 € / para.",
     "category": "Nuoma",
     "categorySlug": "nuoma",
     "price": 0,

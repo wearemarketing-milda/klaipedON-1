@@ -1,5 +1,6 @@
 import { omnivaLockers } from "../data/shop-lockers.js";
 import { clearCart, formatCartMoney, getCartLines, setCartQty } from "./shop-cart.js";
+import { formatShopMoney } from "./shop.js";
 import { productUrl } from "./shop.js";
 
 const draftKey = "klaipedon-checkout";
@@ -186,13 +187,7 @@ export const initShopCheckout = () => {
 
   const deliveryFee = () => (ticketsOnly() ? 0 : (deliveryFees[deliveryMethod()] ?? deliveryFees.omniva));
 
-  const formatSummaryMoney = (value) => {
-    const amount = Math.round(Number(value) * 100);
-    const euros = Math.trunc(amount / 100);
-    const cents = String(Math.abs(amount % 100)).padStart(2, "0");
-
-    return `${euros},${cents} €`;
-  };
+  const formatSummaryMoney = formatShopMoney;
 
   const paintTotals = () => {
     const goods = goodsTotal();

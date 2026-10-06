@@ -62,6 +62,14 @@ const escapeHtml = (value) =>
 const monthNames = "sausio|vasario|kovo|balandžio|gegužės|birželio|liepos|rugpjūčio|rugsėjo|spalio|lapkričio|gruodžio";
 const experienceDate = new RegExp(`(${monthNames})\\s+(\\d{1,2})\\s*d\\.?(?:\\s*\\|\\s*(\\d{1,2})[.:](\\d{2}))?`, "i");
 
+export const formatShopMoney = (value) => {
+  const amount = Math.round(Number(value) * 100);
+  const euros = Math.trunc(amount / 100);
+  const cents = String(Math.abs(amount % 100)).padStart(2, "0");
+
+  return `${euros},${cents} €`;
+};
+
 export const presentProduct = (product) => {
   const kind = product.categorySlug === "ekskursijos" ? "experience" : product.categorySlug === "nuoma" ? "rental" : "goods";
   let title = product.displayName || product.name;
@@ -90,7 +98,11 @@ export const presentProduct = (product) => {
     }
   }
 
-  return { ...product, title, kind, dates, dateLabel: dates[0]?.label || dateLabel, timeLabel };
+  const priceLabel = product.priceLabel === "Nemokama" || !Number.isFinite(Number(product.price))
+    ? product.priceLabel
+    : formatShopMoney(product.price);
+
+  return { ...product, title, kind, dates, dateLabel: dates[0]?.label || dateLabel, timeLabel, priceLabel };
 };
 
 export const renderCard = (product, order) => {

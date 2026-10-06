@@ -1,4 +1,5 @@
 import { formatCartMoney } from "./shop-cart.js";
+import { formatShopMoney } from "./shop.js";
 
 const orderKey = "klaipedon-order";
 
@@ -9,13 +10,7 @@ const escapeHtml = (value) =>
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 
-const formatSummaryMoney = (value) => {
-  const amount = Math.round(Number(value) * 100);
-  const euros = Math.trunc(amount / 100);
-  const cents = String(Math.abs(amount % 100)).padStart(2, "0");
-
-  return `${euros},${cents} €`;
-};
+const formatSummaryMoney = formatShopMoney;
 
 const readOrder = () => {
   try {
