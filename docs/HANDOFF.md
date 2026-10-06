@@ -27,6 +27,41 @@
 - `data-acf-repeater` nurodo repeater tipo turinį
 - `data-acf-sub-field` nurodo repeater įrašo vidinį lauką
 
+## El. parduotuvė
+
+Visas prototipas yra vienoje vietoje. Kiti svetainės puslapiai šitam srautui nepriklauso.
+
+| URL | Failai | WooCommerce |
+|---|---|---|
+| `/el-parduotuve/` | `el-parduotuve/index.html`, `src/scripts/shop.js` | `archive-product.php` |
+| `/el-parduotuve/{slug}/` | `el-parduotuve/preke/index.html`, `src/scripts/shop-product.js` | `content-single-product.php` |
+| Krepšelis (drawer visuose puslapiuose) | `src/scripts/shop-cart.js` | krepšelio fragmentas |
+| `/el-parduotuve/atsiskaitymas/` | `el-parduotuve/atsiskaitymas/index.html`, `src/scripts/shop-checkout.js` | `woocommerce/checkout/form-checkout.php` |
+| `/el-parduotuve/aciu/` | `el-parduotuve/aciu/index.html`, `src/scripts/shop-thanks.js` | `checkout/thankyou.php` |
+
+Duomenys ir turtai:
+
+- `src/data/shop-products.js` — prekės
+- `src/data/shop-lockers.js` — Omniva paštomatai Klaipėdos regione
+- `public/el-parduotuve/images/` — prekių nuotraukos
+- `public/el-parduotuve/payments/` — mokėjimo ir Omniva ženklai
+
+Be šitų bendrų failų srautas neįsijungia:
+
+- `src/main.js` — paleidžia parduotuvės skriptus ir registruoja `Truck` bei `ShieldCheck` ikonas
+- `vite.config.js` — keturi build įėjimai ir perrašymas, kad prekės slug nepavirstų atsiskaitymo ar padėkos puslapiu
+- `src/styles.css` — parduotuvės taisyklės pridėtos failo gale, po `@layer` blokų
+- `src/scripts/site-ui.js` — filtrų mygtuko tekstas parduotuvėje ir dalijimosi mygtukas
+
+Veikianti peržiūra: [klaipedon-deploy.vercel.app/el-parduotuve/](https://klaipedon-deploy.vercel.app/el-parduotuve/).
+
+Prototipo taisyklės, kurių nereikia laikyti galutinėmis WooCommerce kainomis:
+
+- Kainos su PVM. Paštomatas 3,00 €, kurjeris į adresą 5,00 €. Tai laikinos sumos.
+- Mokėjimas numatytas per Paysera (bankas, Apple Pay, kortelė, Paysera paskyra). Kortelės duomenų forma čia nerenka.
+- Krepšelis laikomas `localStorage` rakte `klaipedon-shop-cart`. Atsiskaitymo juodraštis yra `sessionStorage` raktas `klaipedon-checkout`, padėkos suvestinė — `klaipedon-order`.
+- Nėra paskyros, DPD, atsiėmimo parduotuvėje ir veikiančio nuolaidos kodo.
+
 ## Rekomenduojama rankoff seka
 
 1. Užbaigti Figma dizainą pagal šitą section-first struktūrą

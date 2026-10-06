@@ -1,6 +1,11 @@
 import "./styles.css";
-import { createIcons, Accessibility, ArrowLeft, ArrowRight, Bike, Bus, CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight, Clock, CloudUpload, Copy, Filter, Globe, Languages, LayoutDashboard, Mail, MapPin, PawPrint, Phone, Route, Search, Send, Share2, Ship, SlidersHorizontal, Star, Ticket, TrainFront, Utensils, Users } from "lucide";
+import { createIcons, Accessibility, ArrowLeft, ArrowRight, Bike, Bus, CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight, Clock, CloudUpload, Copy, Filter, Globe, Languages, LayoutDashboard, Mail, MapPin, PawPrint, Phone, Route, Search, Send, Share2, ShieldCheck, Ship, SlidersHorizontal, Star, Ticket, TrainFront, Truck, Utensils, Users } from "lucide";
 import { initSiteUI } from "./scripts/site-ui.js";
+import { renderShop } from "./scripts/shop.js";
+import { renderProduct } from "./scripts/shop-product.js";
+import { initShopCart } from "./scripts/shop-cart.js";
+import { initShopCheckout } from "./scripts/shop-checkout.js";
+import { initShopThanks } from "./scripts/shop-thanks.js";
 import cardHoverVideo from "./assets/Baznycia-388w-q25.mp4";
 window.__livingCardHoverVideo = cardHoverVideo;
 import eventAludariai from "./assets/event-aludariai.png";
@@ -163,6 +168,11 @@ document.querySelectorAll("[data-district-map-bg-asset]").forEach((element) => {
   }
 });
 
+renderShop();
+renderProduct();
+initShopCart();
+initShopCheckout();
+initShopThanks();
 initSiteUI();
 
 createIcons({
@@ -192,11 +202,13 @@ createIcons({
     Search,
     Send,
     Share2,
+    ShieldCheck,
     Ship,
     SlidersHorizontal,
     Star,
     Ticket,
     TrainFront,
+    Truck,
     Utensils,
     Users,
   },

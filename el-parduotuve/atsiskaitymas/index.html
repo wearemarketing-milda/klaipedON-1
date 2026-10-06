@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="lt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atsiskaitymas | KlaipėdON</title>
+    <meta name="robots" content="noindex" />
+    <meta
+      name="description"
+      content="KlaipėdON užsakymo atsiskaitymas. Mokėjimas per Paysera: banko nuoroda, Apple Pay arba kortelė."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="page-shell page-shell--checkout">
+      <header class="site-header" data-site-header data-wp-partial="template-parts/header/site-header.php">
+        <div class="site-header__inner">
+          <a class="site-logo" href="/" aria-label="KlaipėdON">
+            <img data-asset="logo-header" alt="KlaipėdON" />
+          </a>
+
+          <button
+            type="button"
+            class="menu-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            data-menu-toggle
+            aria-label="Atidaryti meniu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+          <nav class="site-nav" aria-label="Pagrindinė navigacija">
+            <div class="site-nav__item">
+              <a class="site-nav__link" href="/renginiai/">Renginiai</a>
+            </div>
+
+            <div class="site-nav__item">
+              <a class="site-nav__link" href="/el-parduotuve/" aria-current="page">El. parduotuvė</a>
+            </div>
+
+            <div class="site-nav__item site-nav__item--mega site-nav__item--has-submenu">
+              <span class="site-nav__link">Atrask</span>
+              <div class="site-nav__submenu site-nav__mega-menu" role="region" aria-label="Atrask navigacija">
+                <div class="site-nav__mega-menu-inner">
+                  <div class="site-nav__mega-grid site-nav__mega-grid--2col">
+                    <div class="site-nav__mega-col">
+                      <ul class="site-nav__mega-list">
+                        <li><a href="/ka-pamatyti/">Ką pamatyti?</a></li>
+                        <li><a href="/ka-veikti/">Ką veikti?</a></li>
+                        <li><a href="/gyvenk/kur-pavalgyti/">Kur pavalgyti?</a></li>
+                        <li><a href="/kur-apsistoti/">Kur apsistoti?</a></li>
+                        <li><a href="/konferenciju-erdves/">Konferencijų erdvės</a></li>
+                      </ul>
+                    </div>
+                    <div class="site-nav__mega-col">
+                      <p class="site-nav__mega-col-title">Naudinga informacija</p>
+                      <ul class="site-nav__mega-list">
+                        <li><a href="/naujienos/">Naujienos</a></li>
+                        <li><a href="/atrask/">Viešasis transportas</a></li>
+                        <li><a href="/atrask/">Turisto rinkliava</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="site-nav__item site-nav__item--mega site-nav__item--has-submenu">
+              <span class="site-nav__link">Gyvenk</span>
+              <div class="site-nav__submenu site-nav__mega-menu" role="region" aria-label="Gyvenk navigacija">
+                <div class="site-nav__mega-menu-inner">
+                  <div class="site-nav__mega-grid">
+                    <div class="site-nav__mega-col">
+                      <p class="site-nav__mega-col-title">Šeimai</p>
+                      <ul class="site-nav__mega-list">
+                        <li><a href="/seimai/">Apie gyvenimą Klaipėdoje</a></li>
+                        <li><a href="/seimai/#gyvenamieji-rajonai">Gyvenamieji rajonai</a></li>
+                        <li><a href="/gyvenk/svietimo-istaigos/">Švietimo įstaigos</a></li>
+                        <li><a href="/ka-veikti-laisvalaikiu/">Laisvalaikis</a></li>
+                      </ul>
+                    </div>
+                    <div class="site-nav__mega-col">
+                      <p class="site-nav__mega-col-title">Jaunimui</p>
+                      <ul class="site-nav__mega-list">
+                        <li><a href="/jaunimui/">Apie gyvenimą Klaipėdoje</a></li>
+                        <li><a href="/jaunimui/#jaunimo-erdves">Jaunimo erdvės</a></li>
+                        <li><a href="/gyvenk/studijuok/">Studijuok</a></li>
+                        <li><a href="/ka-veikti-laisvalaikiu/?auditorija=jaunimui">Laisvalaikis</a></li>
+                      </ul>
+                    </div>
+                    <div class="site-nav__mega-col">
+                      <p class="site-nav__mega-col-title">Talentui</p>
+                      <ul class="site-nav__mega-list">
+                        <li><a href="/talentui/">Apie gyvenimą Klaipėdoje</a></li>
+                        <li><a href="/talentui/#kufa">KUFA mentorystės programa</a></li>
+                        <li><a href="/talentui/#spiecius">Spiečius</a></li>
+                        <li><a href="/talentui/#paskatos">Paskatos</a></li>
+                        <li><a href="/talentui/#prioritetiniai-sektoriai">Prioritetiniai sektoriai</a></li>
+                        <li><a href="/ka-veikti-laisvalaikiu/">Laisvalaikis</a></li>
+                      </ul>
+                    </div>
+                    <div class="site-nav__mega-col site-nav__mega-col--cta">
+                      <a class="site-nav__mega-cta" href="/ka-veikti-laisvalaikiu/">
+                        <img data-asset="nav-gyvenk-cta" alt="" />
+                        <span>Ką veikti laisvalaikiu? <i data-lucide="arrow-right"></i></span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="site-nav__item site-nav__item--has-submenu">
+              <span class="site-nav__link">Kurk</span>
+              <div class="site-nav__submenu">
+                <a href="/investuok-ir-dirbk/">Kodėl Klaipėda?</a>
+                <a href="/investuok-ir-dirbk/verslas/">Verslo įkūrimo galimybės</a>
+                <a href="/verslo-ir-coworking-centrai/">Verslo ir coworking centrai</a>
+                <a href="/atrask/">Lokacijos filmavimui</a>
+                <a href="/konferenciju-erdves/">Konferencijų erdvės</a>
+              </div>
+            </div>
+
+            <div class="site-nav__item site-nav__item--mega site-nav__item--has-submenu">
+              <span class="site-nav__link">Apie</span>
+              <div class="site-nav__submenu site-nav__mega-menu" role="region" aria-label="Apie navigacija">
+                <div class="site-nav__mega-menu-inner">
+                  <div class="site-nav__mega-grid">
+                    <div class="site-nav__mega-col">
+                      <p class="site-nav__mega-col-title">Naudinga informacija</p>
+                      <ul class="site-nav__mega-list">
+                        <li><a href="/apie/">Žemėlapis</a></li>
+                        <li><a href="/apie/">Leidiniai ir maršrutai</a></li>
+                        <li><a href="/naujienos/">Naujienos</a></li>
+                        <li><a href="/apie/">Naudingos aplikacijos</a></li>
+                      </ul>
+                    </div>
+                    <div class="site-nav__mega-col">
+                      <p class="site-nav__mega-col-title">Kaip atvykti</p>
+                      <ul class="site-nav__mega-list">
+                        <li><a href="/atrask/dviraciu/">Dviračiu</a></li>
+                        <li><a href="/apie/">Lėktuvu</a></li>
+                        <li><a href="/apie/">Jūriniu keltu</a></li>
+                      </ul>
+                    </div>
+                    <div class="site-nav__mega-col">
+                      <p class="site-nav__mega-col-title">Transportas Klaipėdoje</p>
+                      <ul class="site-nav__mega-list">
+                        <li><a href="/apie/">Miesto viešasis transportas</a></li>
+                        <li><a href="/apie/">Keltai į Smiltynę</a></li>
+                        <li><a href="/apie/">Elektromobilių krovimo stotelės</a></li>
+                        <li><a href="/apie/">Parkavimas</a></li>
+                        <li><a href="/apie/">Transporto nuoma</a></li>
+                        <li><a href="/apie/">Vandens pramogų tiekėjai</a></li>
+                      </ul>
+                    </div>
+                    <div class="site-nav__mega-col site-nav__mega-col--cta">
+                      <a class="site-nav__mega-cta" href="/apie/">
+                        <img data-asset="nav-apie-cta" alt="" />
+                        <span>Struktūra ir kontaktai <i data-lucide="arrow-right"></i></span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+
+          <div class="site-header__tools" aria-label="Naudotojo veiksmai">
+            <div class="site-header__icons" aria-hidden="true">
+              <i data-lucide="search"></i>
+              <i data-lucide="accessibility"></i>
+            </div>
+            <span class="site-header__divider" aria-hidden="true"></span>
+            <a class="site-lang" href="/" lang="en">EN</a>
+          </div>
+        </div>
+
+        <div id="mobile-menu" class="mobile-menu" data-mobile-menu>
+          <nav class="mobile-menu__nav" aria-label="Mobilioji navigacija">
+            <a href="/renginiai/">Renginiai</a>
+            <a href="/el-parduotuve/" aria-current="page">El. parduotuvė</a>
+            <a href="/renginiai/parodos/">Parodos</a>
+            <a href="/praneskite-apie-rengini/">Pranešk apie renginį</a>
+            <a href="/#atrask">Atrask</a>
+            <a href="/atrask/dviraciu/">Dviračiu</a>
+            <a href="/naujienos/">Naujienos</a>
+            <a href="/gyvenk/">Gyvenk</a>
+            <a href="/#investuok">Kurk</a>
+            <a href="/apie/">Apie</a>
+            <a href="/" lang="en">EN</a>
+          </nav>
+        </div>
+      </header>
+
+            <main class="checkout" data-shop-checkout data-wp-partial="woocommerce/checkout/form-checkout.php">
+        <header class="checkout__intro">
+          <h1>Atsiskaitymas</h1>
+        </header>
+
+        <div class="checkout__empty" data-checkout-empty hidden>
+          <p>Krepšelis tuščias.</p>
+          <a href="/el-parduotuve/">Žiūrėti prekes</a>
+        </div>
+
+        <div class="checkout__layout" data-checkout-layout hidden>
+          <form class="checkout__form" data-checkout-form novalidate>
+            <section aria-labelledby="checkout-delivery-title">
+              <h2 id="checkout-delivery-title">Pristatymas</h2>
+              <div class="checkout__choices">
+                <div class="checkout__choice">
+                  <label class="checkout-method">
+                    <input type="radio" name="delivery" value="omniva" checked />
+                    <span class="checkout-method__body">
+                      <span class="checkout-method__name">Omniva paštomatas</span>
+                      <span class="checkout-method__text">Atsiimsite iš pasirinkto paštomato</span>
+                    </span>
+                    <img class="checkout-logo" src="/el-parduotuve/payments/omniva.svg" alt="" />
+                  </label>
+                  <div class="checkout__panel" data-checkout-lockers>
+                    <h3>Pasirinkite paštomatą</h3>
+                    <label class="checkout__field">
+                      <span class="sr-only">Ieškoti paštomato</span>
+                      <input id="checkout-locker-search" name="lockerSearch" type="search" placeholder="Miestas arba gatvė" data-checkout-locker-search autocomplete="off" />
+                    </label>
+                    <div class="checkout__lockers" data-checkout-locker-list role="radiogroup" aria-label="Paštomatai"></div>
+                    <p class="checkout__hint" data-checkout-locker-empty hidden>Tokio paštomato neradome. Bandykite miestą ar gatvę.</p>
+                    <p class="checkout__error" id="checkout-locker-error" hidden></p>
+                    <div class="checkout__locker-actions">
+                      <button type="button" data-checkout-locker-more>Rodyti daugiau paštomatų</button>
+                      <button type="button" data-checkout-locker-near>Rodyti artimiausius</button>
+                    </div>
+                    <p class="checkout__hint" data-checkout-locker-near-note hidden></p>
+                  </div>
+                </div>
+                <div class="checkout__choice">
+                  <label class="checkout-method">
+                    <input type="radio" name="delivery" value="courier" />
+                    <span class="checkout-method__body">
+                      <span class="checkout-method__name">Kurjeris į adresą</span>
+                      <span class="checkout-method__text">Atvešime į jūsų adresą</span>
+                    </span>
+                  </label>
+                  <div class="checkout__panel" data-checkout-address hidden>
+                    <h3>Pristatymo adresas</h3>
+                    <div class="checkout__grid">
+                      <label class="checkout__field checkout__field--wide">
+                        <span>Adresas</span>
+                        <input id="checkout-address" name="address" type="text" autocomplete="street-address" aria-describedby="checkout-address-error" />
+                        <p class="checkout__error" id="checkout-address-error" hidden></p>
+                      </label>
+                      <label class="checkout__field">
+                        <span>Miestas</span>
+                        <input id="checkout-city" name="city" type="text" autocomplete="address-level2" aria-describedby="checkout-city-error" />
+                        <p class="checkout__error" id="checkout-city-error" hidden></p>
+                      </label>
+                      <label class="checkout__field">
+                        <span>Pašto kodas</span>
+                        <input id="checkout-postcode" name="postcode" type="text" autocomplete="postal-code" inputmode="numeric" aria-describedby="checkout-postcode-error" />
+                        <p class="checkout__error" id="checkout-postcode-error" hidden></p>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section aria-labelledby="checkout-contact-title">
+              <h2 id="checkout-contact-title">Kontaktai</h2>
+              <p class="checkout__hint">Sąskaitą ir patvirtinimą atsiųsime šiuo el. paštu. Apie siuntą pranešime telefonu.</p>
+              <div class="checkout__grid">
+                <label class="checkout__field">
+                  <span>El. paštas</span>
+                  <input id="checkout-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="checkout-email-error" />
+                  <p class="checkout__error" id="checkout-email-error" hidden></p>
+                </label>
+                <label class="checkout__field">
+                  <span>Telefonas</span>
+                  <input id="checkout-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="checkout-phone-error" />
+                  <p class="checkout__error" id="checkout-phone-error" hidden></p>
+                </label>
+                <label class="checkout__field">
+                  <span>Vardas</span>
+                  <input id="checkout-first" name="firstName" type="text" autocomplete="given-name" required aria-describedby="checkout-first-error" />
+                  <p class="checkout__error" id="checkout-first-error" hidden></p>
+                </label>
+                <label class="checkout__field">
+                  <span>Pavardė</span>
+                  <input id="checkout-last" name="lastName" type="text" autocomplete="family-name" required aria-describedby="checkout-last-error" />
+                  <p class="checkout__error" id="checkout-last-error" hidden></p>
+                </label>
+              </div>
+            </section>
+
+            <fieldset class="checkout__payment">
+              <legend>Mokėjimas</legend>
+              <p class="checkout__hint">Mokėsite per Paysera. Kortelės numerio čia neprašome.</p>
+              <div class="checkout__pay-list">
+                <label class="checkout-pay">
+                  <input type="radio" name="payment" value="banklink" checked />
+                  <span class="checkout-pay__body">
+                    <span class="checkout-pay__name">Per banką</span>
+                    <span class="checkout-pay__text">Atsidarys jūsų bankas.</span>
+                  </span>
+                  <i data-lucide="check"></i>
+                </label>
+                <label class="checkout-pay">
+                  <input type="radio" name="payment" value="apple-pay" />
+                  <span class="checkout-pay__body">
+                    <span class="checkout-pay__name">Apple Pay</span>
+                    <span class="checkout-pay__text">Jei telefonas ar kompiuteris turi Apple Pay, galėsite juo mokėti.</span>
+                  </span>
+                  <span class="checkout-pay__mark">
+                    <i data-lucide="check"></i>
+                    <img class="checkout-logo" src="/el-parduotuve/payments/apple-pay.svg" alt="" />
+                  </span>
+                </label>
+                <label class="checkout-pay">
+                  <input type="radio" name="payment" value="card" />
+                  <span class="checkout-pay__body">
+                    <span class="checkout-pay__name">Kortelė</span>
+                    <span class="checkout-pay__text">Visa arba Mastercard. Numerį įvesite mokėjimo lange.</span>
+                  </span>
+                  <span class="checkout-pay__mark">
+                    <i data-lucide="check"></i>
+                    <span class="checkout-pay__logos">
+                      <img class="checkout-logo checkout-logo--card" src="/el-parduotuve/payments/visa.svg" alt="" />
+                      <img class="checkout-logo checkout-logo--card" src="/el-parduotuve/payments/mastercard.svg" alt="" />
+                    </span>
+                  </span>
+                </label>
+                <label class="checkout-pay">
+                  <input type="radio" name="payment" value="paysera" />
+                  <span class="checkout-pay__body">
+                    <span class="checkout-pay__name">Paysera</span>
+                    <span class="checkout-pay__text">Prisijungsite prie savo Paysera paskyros.</span>
+                  </span>
+                  <span class="checkout-pay__mark">
+                    <i data-lucide="check"></i>
+                    <img class="checkout-logo" src="/el-parduotuve/payments/paysera.svg" alt="" />
+                  </span>
+                </label>
+              </div>
+              <div class="checkout__banks" data-checkout-banks>
+                <p class="checkout__hint">Pasirinkite banką</p>
+                <div class="checkout__bank-list">
+                  <label class="checkout-bank"><input type="radio" name="bank" value="Swedbank" aria-label="Swedbank" /><img class="checkout-logo checkout-logo--bank" src="/el-parduotuve/payments/swedbank.svg" alt="" /></label>
+                  <label class="checkout-bank"><input type="radio" name="bank" value="SEB" aria-label="SEB" /><img class="checkout-logo checkout-logo--bank" src="/el-parduotuve/payments/seb.svg" alt="" /></label>
+                  <label class="checkout-bank"><input type="radio" name="bank" value="Luminor" aria-label="Luminor" /><img class="checkout-logo checkout-logo--bank" src="/el-parduotuve/payments/luminor.svg" alt="" /></label>
+                  <label class="checkout-bank"><input type="radio" name="bank" value="Šiaulių bankas" aria-label="Šiaulių bankas" /><img class="checkout-logo checkout-logo--bank" src="/el-parduotuve/payments/siauliu.png" alt="" /></label>
+                  <label class="checkout-bank"><input type="radio" name="bank" value="Citadele" aria-label="Citadele" /><img class="checkout-logo checkout-logo--bank" src="/el-parduotuve/payments/citadele.svg" alt="" /></label>
+                </div>
+                <p class="checkout__error" id="checkout-bank-error" hidden></p>
+              </div>
+            </fieldset>
+
+            <p class="checkout__result" data-checkout-result hidden tabindex="-1"></p>
+            <button class="checkout__submit" type="submit">Tęsti per Paysera</button>
+            <p class="checkout__legal">Tęsdami sutinkate, kad užsakymą tvarkytų VšĮ „Klaipėdos turizmo informacijos centras“. <a href="/">Privatumo politika</a></p>
+          </form>
+
+          <aside class="checkout__summary is-open" data-checkout-summary>
+            <button class="checkout__summary-toggle" type="button" data-checkout-summary-toggle aria-expanded="true" aria-controls="checkout-summary-body">
+              <span>Jūsų užsakymas</span>
+            </button>
+            <div class="checkout__summary-body" id="checkout-summary-body">
+              <div class="checkout__lines" id="checkout-order-lines" data-checkout-lines></div>
+              <button class="checkout__lines-toggle" type="button" data-checkout-lines-toggle hidden aria-expanded="false" aria-controls="checkout-order-lines">
+                <span>Rodyti visas prekes</span>
+                <i class="checkout__lines-toggle-icon" data-lucide="chevron-down"></i>
+              </button>
+              <details class="checkout__coupon">
+                <summary>
+                  <i data-lucide="ticket"></i>
+                  <span>Turite nuolaidos kodą?</span>
+                  <i class="checkout__coupon-arrow" data-lucide="chevron-down"></i>
+                </summary>
+                <div class="checkout__coupon-row">
+                  <label>
+                    <span class="sr-only">Nuolaidos kodas</span>
+                    <input type="text" name="coupon" autocomplete="off" data-checkout-coupon-input />
+                  </label>
+                  <button type="button" data-checkout-coupon>Taikyti</button>
+                </div>
+                <p class="checkout__coupon-note" data-checkout-coupon-note hidden></p>
+              </details>
+              <dl class="checkout__totals">
+                <div>
+                  <dt>Tarpinė suma</dt>
+                  <dd data-checkout-subtotal>0 €</dd>
+                </div>
+                <div>
+                  <dt>Pristatymas</dt>
+                  <dd data-checkout-shipping>3,00 €</dd>
+                </div>
+                <div class="checkout__totals-grand">
+                  <dt>Iš viso su PVM</dt>
+                  <dd data-checkout-goods>0 €</dd>
+                </div>
+              </dl>
+              <p class="sr-only" data-checkout-delivery>Omniva paštomatas</p>
+            </div>
+          </aside>
+        </div>
+      </main>
+
+      <footer class="site-footer" data-wp-partial="template-parts/footer/site-footer.php">
+        <div class="site-footer__bg" aria-hidden="true">
+          <img data-asset="footer-ribbon" alt="" />
+        </div>
+
+        <section class="footer-top" id="investuok">
+          <div class="footer-top__inner">
+            <a class="site-logo site-logo--footer" href="/" aria-label="KlaipėdON">
+              <img data-asset="logo-footer" alt="KlaipėdON" />
+            </a>
+
+            <div class="footer-contact" data-acf-field="contact_email">
+              <a href="mailto:info@klaipedon.lt" class="footer-contact__mail">info@klaipedon.lt</a>
+
+              <form class="newsletter" data-acf-field="contact_form_shortcode">
+                <p class="newsletter__title">Naujienlaiškio prenumerata</p>
+                <label class="newsletter__field">
+                  <span class="sr-only">El. paštas</span>
+                  <input type="email" name="email" placeholder="El. paštas" />
+                </label>
+                <button type="submit" class="newsletter__submit">Prenumeruoti <i data-lucide="chevron-right"></i></button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="footer-bottom" id="gyvenk" data-wp-partial="template-parts/sections/footer-cta.php">
+          <div class="footer-bottom__inner">
+            <div class="footer-bottom__headline" data-acf-field="footer_tagline">
+              <p>Sea yourself</p>
+              <p>in Klaipėda</p>
+            </div>
+
+            <div class="footer-bottom__meta">
+              <div class="footer-bottom__legal">
+                <a href="/" data-acf-field="privacy_policy_label">Privatumo politika</a>
+                <p>2026 Klaipėda On.</p>
+                <p>Visos teisės saugomos.</p>
+              </div>
+              <div class="footer-bottom__seal">
+                <img data-asset="city-seal" alt="Klaipėdos miesto ženklas" />
+              </div>
+            </div>
+          </div>
+        </section>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

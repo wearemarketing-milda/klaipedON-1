@@ -213,7 +213,7 @@ export function initSiteUI() {
     }
   });
 
-  document.querySelectorAll(".event-detail-card").forEach((card) => {
+  document.querySelectorAll(".event-detail-card:not(.shop-product__card)").forEach((card) => {
     const meta = card.querySelector(".event-detail-meta");
 
     if (!meta || card.querySelector(".archive-event-card__accessibility")) {
@@ -710,9 +710,16 @@ export function initSiteUI() {
     const filterRoot = filterToggle.closest(".events-filter");
     const desktopFilter = window.matchMedia("(min-width: 1101px)");
 
+    const shopFilters = Boolean(filterRoot?.querySelector("[data-shop-filter]"));
+
     const setFilterOpen = (open) => {
       filterToggle.setAttribute("aria-expanded", String(open));
-      filterToggle.setAttribute("aria-label", open ? "Suskleisti filtravimą" : "Atverti filtravimą");
+      filterToggle.setAttribute(
+        "aria-label",
+        shopFilters
+          ? (open ? "Slėpti filtrus" : "Rodyti filtrus")
+          : (open ? "Suskleisti filtravimą" : "Atverti filtravimą"),
+      );
       filterRoot?.classList.toggle("is-open", open);
     };
 
@@ -1585,6 +1592,73 @@ export function initSiteUI() {
   } else {
     revealTargets.forEach((target) => target.classList.add("is-visible"));
   }
+
+  document.querySelectorAll(".event-detail-share").forEach((group) => {
+    const shareLink = group.querySelector("[data-lucide='share-2']")?.closest("a");
+    const copyLink = group.querySelector("[data-lucide='copy']")?.closest("a");
+    const pageUrl = () => window.location.href;
+    const pageTitle = () => document.querySelector("h1")?.textContent.trim() || document.title;
+
+    const markCopied = (link) => {
+      const previous = link.getAttribute("aria-label");
+      link.setAttribute("aria-label", "Nuoroda nukopijuota");
+      window.setTimeout(() => {
+        if (link.getAttribute("aria-label") === "Nuoroda nukopijuota") {
+          link.setAttribute("aria-label", previous);
+        }
+      }, 1600);
+    };
+
+    const copyPageUrl = async (link) => {
+      const url = pageUrl();
+
+      try {
+        await navigator.clipboard.writeText(url);
+        markCopied(link);
+        return true;
+      } catch {
+        const field = document.createElement("textarea");
+        field.value = url;
+        field.setAttribute("readonly", "");
+        field.style.position = "fixed";
+        field.style.left = "-9999px";
+        document.body.append(field);
+        field.select();
+        const copied = document.execCommand("copy");
+        field.remove();
+
+        if (copied) {
+          markCopied(link);
+        }
+
+        return copied;
+      }
+    };
+
+    shareLink?.addEventListener("click", async (event) => {
+      event.preventDefault();
+      const url = pageUrl();
+      const title = pageTitle();
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title, url });
+          return;
+        } catch (error) {
+          if (error?.name === "AbortError") {
+            return;
+          }
+        }
+      }
+
+      copyPageUrl(shareLink);
+    });
+
+    copyLink?.addEventListener("click", (event) => {
+      event.preventDefault();
+      copyPageUrl(copyLink);
+    });
+  });
 
   // Living card hover video
   const hoverVideoSrc = window.__livingCardHoverVideo;

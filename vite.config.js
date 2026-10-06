@@ -1,6 +1,30 @@
 import { defineConfig } from "vite";
 
+const shopProductPages = () => {
+  const rewrite = (req, _res, next) => {
+    const path = req.url?.split("?")[0] ?? "";
+    const slug = path.match(/^\/el-parduotuve\/([^/.]+)\/?$/)?.[1];
+
+    if (slug && slug !== "preke" && slug !== "atsiskaitymas" && slug !== "aciu") {
+      req.url = "/el-parduotuve/preke/index.html";
+    }
+
+    next();
+  };
+
+  return {
+    name: "shop-product-pages",
+    configureServer(server) {
+      server.middlewares.use(rewrite);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(rewrite);
+    },
+  };
+};
+
 export default defineConfig({
+  plugins: [shopProductPages()],
   build: {
     rollupOptions: {
       input: {
@@ -26,6 +50,10 @@ export default defineConfig({
         renginiai: "renginiai/index.html",
         parodos: "renginiai/parodos/index.html",
         renginys: "renginiai/kamaniu-silelis/index.html",
+        elParduotuve: "el-parduotuve/index.html",
+        elParduotuvePreke: "el-parduotuve/preke/index.html",
+        atsiskaitymas: "el-parduotuve/atsiskaitymas/index.html",
+        aciu: "el-parduotuve/aciu/index.html",
       },
     },
   },

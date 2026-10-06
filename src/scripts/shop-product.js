@@ -1,0 +1,349 @@
+import { shopProducts } from "../data/shop-products.js";
+import { presentProduct, productUrl, renderCard } from "./shop.js";
+
+const escapeHtml = (value) =>
+  String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+
+const decodeSlug = (value) => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
+const sameSlug = (left, right) => decodeSlug(left) === decodeSlug(right);
+
+const productSlug = () => {
+  const slug = window.location.pathname.match(/^\/el-parduotuve\/([^/]+)\/?$/)?.[1];
+  return slug && slug !== "preke" ? slug : "";
+};
+
+const families = [
+  ["kuprine", "kuprine-2"],
+  ["danes-krantine", "birzos-tilto-eskizas", "meridiano-eskizas", "dane-riverside", "evening", "zveju-2-paveikslas"],
+  ["lipdukas-mazoji-lietuva-herbas", "lipdukas-mazoji-lietuva-veliava"],
+  ["balti-marskineliai-su-neptuno-herbu", "marskineliai-klaipeda-2"],
+  ["klaipeda-und-die-kurische-nehrung", "%d0%ba%d0%bb%d0%b0%d0%b9%d0%bf%d0%b5%d0%b4%d0%b0-%d0%b8-%d0%ba%d1%83%d1%80%d1%88%d1%81%d0%ba%d0%b0%d1%8f-%d0%ba%d0%be%d1%81%d0%b0"],
+  ["gido-sistema", "nesiojama-garso-sistema"],
+];
+
+const catalogFacts = {
+  "kepure-su-klaipedos-herbu": ["Spalvos: raudona, juoda"],
+  "apyranke-klaipeda": ["Dydžiai: S, L"],
+  "marskineliai-klaipeda-2": ["Dydis: S"],
+  "balti-marskineliai-su-neptuno-herbu": ["Dydis: XXL"],
+  "kojines-klaipeda": ["Dydis: 41–45"],
+};
+
+const crumbTitles = {
+  "ekskursija-nuo-turbinos-iki-bravoro-unikalios-patirtys-klaipedos-elektrines-teritorijoje-liepos-23-d-18-00": "Nuo turbinos iki bravoro",
+  "suvenyrine-vetrunge-su-klaipedos-miesto-simboliais": "Vėtrungė",
+  "drobinis-maiseliai-tote-bags": "Maišeliai",
+  "pliusiniai-meskinai": "Meškiukai",
+  "linkejimai-nuo-juros-apyranke-su-gintarais": "Apyrankė su gintarais",
+  "balti-marskineliai-su-neptuno-herbu": "Marškinėliai „Neptūnas“",
+  "marskineliai-klaipeda-2": "Marškinėliai KLAIPĖDA",
+  "k-demereckas-nemuno-delta-penkiu-simtmeciu-akimirka": "Nemuno delta",
+  "keraminis-dubenelis-su-kojytemis": "Dubenėlis",
+  "mini-keramikos-auskarai": "Auskarai",
+  "klaipeda-und-die-kurische-nehrung": "Gidas vokiečių k.",
+  "%d0%ba%d0%bb%d0%b0%d0%b9%d0%bf%d0%b5%d0%b4%d0%b0-%d0%b8-%d0%ba%d1%83%d1%80%d1%88%d1%81%d0%ba%d0%b0%d1%8f-%d0%ba%d0%be%d1%81%d0%b0": "Gidas rusų k.",
+  kuprine: "Kuprinė",
+  "kuprine-2": "Kuprinė",
+  "nesiojama-garso-sistema": "Garso sistema",
+  "lipdukas-mazoji-lietuva-herbas": "Lipdukas. Herbas",
+  "lipdukas-mazoji-lietuva-veliava": "Lipdukas. Vėliava",
+  "zveju-2-paveikslas": "Žvejų g. 2",
+};
+
+const consultantEmail = "tic@klaipedainfo.lt";
+
+const readSummary = (summary) => {
+  const source = summary.trim();
+  const mapUrl = source.match(/https?:\/\/\S+/)?.[0] ?? "";
+  const location = source.match(/susitikimo vieta\s*[–—-]\s*([^,\n]+)/i)?.[1].trim() ?? "";
+  const text = source
+    .replace(/https?:\/\/\S+/g, "")
+    .replace(/,?\s*susitikimo vieta\s*[–—-]\s*[^,\n]+/i, "")
+    .replace(/\s+,/g, "")
+    .replace(/\.,/g, ".")
+    .replace(/[,\s]+$/g, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/\s+\./g, ".")
+    .trim();
+
+  return { text, mapUrl, location };
+};
+
+const paragraphs = (text) => {
+  const sentences = text.split(/(?<=\.)\s+(?=[A-ZĄČĘĖĮŠŲŪŽ„"])/u).filter(Boolean);
+
+  if (sentences.length < 3) {
+    return [text];
+  }
+
+  const groups = [];
+
+  for (let index = 0; index < sentences.length; index += 2) {
+    groups.push(sentences.slice(index, index + 2).join(" "));
+  }
+
+  return groups;
+};
+
+export const relatedProducts = (slug) => {
+  const family = families.find((group) => group.some((entry) => sameSlug(entry, slug)));
+
+  if (!family) {
+    return [];
+  }
+
+  return family
+    .filter((entry) => !sameSlug(entry, slug))
+    .map((entry) => shopProducts.find((product) => sameSlug(product.slug, entry)))
+    .filter(Boolean);
+};
+
+const crumbTitle = (item) => {
+  const named = Object.entries(crumbTitles).find(([slug]) => sameSlug(slug, item.slug))?.[1];
+
+  if (named) {
+    return named;
+  }
+
+  return item.title.replace(/^(?:Art print|Grafikos darbas)\s*\|\s*/i, "").trim();
+};
+
+const rentalRate = (summary) => summary.match(/Kaina\s*[–—-]\s*([^.]+)/i)?.[1].trim() ?? "";
+
+const rentalBody = (text) => text
+  .replace(/Dėl šio produkto nuomos bendrauti asmeniškai su Klaipėdos TIC konsultantu\.?/gi, "")
+  .replace(/Kaina\s*[–—-]\s*[^.]+\.?/gi, "")
+  .replace(/\s{2,}/g, " ")
+  .trim();
+
+const experienceRows = (item, details) => {
+  const summary = item.summary || "";
+  const when = [item.dateLabel, item.timeLabel].filter(Boolean).join(", ");
+  const duration = summary.match(/trukmė\s*[–—-]\s*([^.]*)/i)?.[1].trim() ?? "";
+  const age = summary.match(/skirta asmenims\s+([^.]*)/i)?.[1].trim() ?? "";
+  const styleCount = summary.match(/(\d+)\s+skirtingų stilių/i)?.[1];
+  const included = /degustacija/i.test(summary) && /mini-kvizas/i.test(summary)
+    ? `Alaus degustacija${styleCount ? ` (${styleCount} stiliai)` : ""} ir mini-kvizas`
+    : "";
+  const place = details.location
+    ? details.mapUrl
+      ? `<a href="${escapeHtml(details.mapUrl)}" target="_blank" rel="noreferrer">${escapeHtml(details.location)}</a>`
+      : escapeHtml(details.location)
+    : "";
+
+  return [
+    when ? ["calendar-days", "Data", escapeHtml(when)] : "",
+    duration ? ["clock", "Trukmė", escapeHtml(duration)] : "",
+    age ? ["users", "Skirta", escapeHtml(age.charAt(0).toUpperCase() + age.slice(1))] : "",
+    included ? ["check", "Įskaičiuota", escapeHtml(included)] : "",
+    place ? ["map-pin", "Vieta", place] : "",
+  ].filter(Boolean);
+};
+
+const quantityMarkup = () => `
+  <div class="shop-product__qty">
+    <button type="button" data-shop-qty="minus" aria-label="Mažinti kiekį">−</button>
+    <span data-shop-qty-value aria-live="polite">1</span>
+    <button type="button" data-shop-qty="plus" aria-label="Didinti kiekį">+</button>
+  </div>
+`;
+
+const actionMarkup = (item) => {
+  if (item.kind === "rental") {
+    const subject = encodeURIComponent(`Nuoma: ${item.title}`);
+    return `<a class="event-detail-card__cta" href="mailto:${consultantEmail}?subject=${subject}">Rašyti konsultantui</a>`;
+  }
+
+  if (item.kind === "experience") {
+    return `<button class="event-detail-card__cta" type="button">Rezervuoti</button>`;
+  }
+
+  return `<button class="event-detail-card__cta" type="button" data-shop-add="${escapeHtml(item.slug)}">Į krepšelį</button>`;
+};
+
+const variantMarkup = (item) => {
+  const family = families.find((group) => group.some((entry) => sameSlug(entry, "kuprine")) && group.some((entry) => sameSlug(entry, item.slug)));
+
+  if (!family) {
+    return "";
+  }
+
+  const options = family.map((slug) => {
+    const product = shopProducts.find((entry) => sameSlug(entry.slug, slug));
+    const label = (product?.displayName || product?.name || "").split("|").pop().trim();
+    const current = sameSlug(slug, item.slug);
+
+    if (current) {
+      return `<span aria-current="true">${escapeHtml(label)}</span>`;
+    }
+
+    return `<a href="${productUrl(product.slug)}">${escapeHtml(label)}</a>`;
+  }).join("");
+
+  return `<div class="shop-product__variants"><p>Raštas</p><div role="group" aria-label="Kuprinės variantas">${options}</div></div>`;
+};
+
+const renderProductPage = (product) => {
+  const item = presentProduct(product);
+  const details = readSummary(item.summary || "");
+  const body = item.kind === "rental" ? rentalBody(details.text) : details.text;
+  const isLongCopy = body.length > 160;
+  const facts = catalogFacts[item.slug] || Object.entries(catalogFacts).find(([slug]) => sameSlug(slug, item.slug))?.[1] || [];
+  const noteRepeatsFact = facts.length > 0 && body.length < 48 && /dydis|spalv|dydž/i.test(body);
+  const showNote = item.kind === "goods" && !isLongCopy && body && !noteRepeatsFact;
+  const rate = item.kind === "rental" ? rentalRate(item.summary || "") : "";
+  const context = item.kind === "rental"
+    ? `${rate ? `${rate}. ` : ""}Dėl nuomos parašykite Klaipėdos TIC konsultantui.`
+    : item.kind === "experience"
+      ? "Su PVM."
+      : "";
+  const barNote = item.kind === "rental"
+    ? [rate, "Rašykite konsultantui"].filter(Boolean).join(" · ")
+    : item.kind === "experience"
+      ? [item.dateLabel, item.timeLabel].filter(Boolean).join(", ")
+      : "";
+  const rows = item.kind === "experience" ? experienceRows(item, details) : [];
+  const related = relatedProducts(item.slug);
+  const meta = rows.map(([icon, label, value]) => `
+    <div>
+      <dt><i data-lucide="${icon}"></i><span>${escapeHtml(label)}</span></dt>
+      <dd>${value}</dd>
+    </div>
+  `).join("");
+
+  document.title = `${item.title} | KlaipėdON`;
+
+  return `
+    <section class="event-detail-showcase shop-product shop-product--${item.kind}" data-wp-partial="template-parts/single-product/product-content.php">
+      <nav class="shop-product__crumb" aria-label="Kelias">
+        <ol>
+          <li><a href="/el-parduotuve/">Parduotuvė</a></li>
+          <li><a href="/el-parduotuve/?kategorija=${encodeURIComponent(item.categorySlug)}">${escapeHtml(item.category)}</a></li>
+          <li aria-current="page">${escapeHtml(crumbTitle(item))}</li>
+        </ol>
+      </nav>
+      <div class="event-detail-showcase__layout">
+        <div class="event-detail-cover" data-acf-field="product_image">
+          ${item.image ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" />` : ""}
+        </div>
+        <aside class="event-detail-card shop-product__card">
+          <p class="section-kicker" data-acf-field="product_category">${escapeHtml(item.category)}</p>
+          <h1 data-acf-field="product_title">${escapeHtml(item.title)}</h1>
+          <p class="shop-product__price" data-acf-field="product_price">${escapeHtml(item.priceLabel)}</p>
+          ${context ? `<p class="shop-product__context">${escapeHtml(context)}</p>` : ""}
+          ${facts.length ? `<p class="shop-product__facts">${facts.map((fact) => escapeHtml(fact)).join("<br>")}</p>` : ""}
+          ${variantMarkup(item)}
+          ${meta ? `<dl class="event-detail-meta">${meta}</dl>` : ""}
+          ${showNote ? `<p class="shop-product__note">${escapeHtml(body)}</p>` : ""}
+          ${item.kind === "rental" && body && !isLongCopy ? `<p class="shop-product__note">${escapeHtml(body)}</p>` : ""}
+          <div class="shop-product__buy">
+            ${item.kind === "goods" ? quantityMarkup() : ""}
+            ${actionMarkup(item)}
+            ${item.kind === "goods" ? `
+              <ul class="shop-product__assurances">
+                <li><i data-lucide="truck"></i><span>Pristatome per 1–2 darbo dienas</span></li>
+                <li><i data-lucide="shield-check"></i><span>Mokate saugiai</span></li>
+              </ul>
+            ` : ""}
+          </div>
+          <div class="event-detail-share" aria-label="Dalintis preke">
+            <span>Dalintis</span>
+            <a href="/" aria-label="Dalintis preke"><i data-lucide="share-2"></i></a>
+            <a href="/" aria-label="Kopijuoti nuorodą"><i data-lucide="copy"></i></a>
+          </div>
+        </aside>
+        ${isLongCopy ? `<article class="event-detail-copy" data-acf-field="product_description"><h2>${item.kind === "experience" ? "Apie ekskursiją" : item.kind === "rental" ? "Apie nuomą" : "Apie prekę"}</h2>${paragraphs(body).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}</article>` : ""}
+      </div>
+    </section>
+    ${related.length ? `
+      <section class="related-events">
+        <div class="related-events__header">
+          <div>
+            <p class="section-kicker">El. parduotuvė</p>
+            <h2>Panašios prekės</h2>
+          </div>
+          <a href="/el-parduotuve/">Visos prekės <i data-lucide="chevron-right"></i></a>
+        </div>
+        <div class="events-grid">
+          ${related.map((entry, index) => renderCard(entry, index)).join("")}
+        </div>
+      </section>
+    ` : ""}
+    <div class="shop-product__bar" data-shop-bar>
+      <div class="shop-product__bar-copy">
+        <p class="shop-product__price">${escapeHtml(item.priceLabel)}</p>
+        ${barNote ? `<p class="shop-product__bar-note">${escapeHtml(barNote)}</p>` : ""}
+      </div>
+      <div class="shop-product__bar-actions">
+        ${item.kind === "goods" ? quantityMarkup() : ""}
+        ${actionMarkup(item)}
+      </div>
+    </div>
+  `;
+};
+
+const renderMissing = () => `
+  <section class="event-detail-showcase shop-product">
+    <nav class="shop-product__crumb" aria-label="Kelias">
+      <ol>
+        <li><a href="/el-parduotuve/">Parduotuvė</a></li>
+        <li aria-current="page">Tokios prekės nėra</li>
+      </ol>
+    </nav>
+    <h1>Tokios prekės nėra</h1>
+  </section>
+`;
+
+const bindPurchase = (root) => {
+  const values = [...root.querySelectorAll("[data-shop-qty-value]")];
+
+  if (!values.length) {
+    return;
+  }
+
+  let quantity = 1;
+  const paint = () => {
+    values.forEach((node) => {
+      node.textContent = String(quantity);
+    });
+    root.querySelectorAll("[data-shop-qty='minus']").forEach((button) => {
+      button.disabled = quantity <= 1;
+    });
+  };
+
+  root.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-shop-qty]");
+
+    if (!button || button.disabled) {
+      return;
+    }
+
+    quantity = Math.max(1, quantity + (button.getAttribute("data-shop-qty") === "plus" ? 1 : -1));
+    paint();
+  });
+
+  paint();
+};
+
+export const renderProduct = () => {
+  const root = document.querySelector("[data-shop-product]");
+
+  if (!root) {
+    return;
+  }
+
+  const product = shopProducts.find((entry) => sameSlug(entry.slug, productSlug()));
+  root.innerHTML = product ? renderProductPage(product) : renderMissing();
+  bindPurchase(root);
+};
