@@ -103,14 +103,22 @@ const paragraphs = (text) => {
 export const relatedProducts = (slug) => {
   const family = families.find((group) => group.some((entry) => sameSlug(entry, slug)));
 
-  if (!family) {
+  if (family) {
+    return family
+      .filter((entry) => !sameSlug(entry, slug))
+      .map((entry) => shopProducts.find((product) => sameSlug(product.slug, entry)))
+      .filter(Boolean);
+  }
+
+  const product = shopProducts.find((entry) => sameSlug(entry.slug, slug));
+
+  if (!product?.categorySlug) {
     return [];
   }
 
-  return family
-    .filter((entry) => !sameSlug(entry, slug))
-    .map((entry) => shopProducts.find((product) => sameSlug(product.slug, entry)))
-    .filter(Boolean);
+  return shopProducts
+    .filter((entry) => entry.categorySlug === product.categorySlug && !sameSlug(entry.slug, slug))
+    .slice(0, 4);
 };
 
 const crumbTitle = (item) => {
