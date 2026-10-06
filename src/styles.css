@@ -8007,6 +8007,46 @@
   outline-offset: 2px;
 }
 
+.shop-product__colors > div {
+  gap: 0.4rem;
+}
+
+.shop-product__variants label.shop-product__color {
+  display: grid;
+  justify-items: center;
+  align-items: stretch;
+  gap: 0.18rem;
+  width: 4.65rem;
+  min-height: 0;
+  padding: 0.28rem 0.28rem 0.32rem;
+  font-size: 0.72rem;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.shop-product__color img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: center 36%;
+}
+
+.shop-product__variants .shop-product__color span {
+  display: block;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 0.72rem;
+  line-height: 1.15;
+}
+
+.shop-product__color:has(input:checked) {
+  box-shadow: 0 0 0 2px var(--color-night);
+}
+
 .shop-product--experience .event-detail-card {
   position: static;
 }

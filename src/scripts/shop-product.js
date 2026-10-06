@@ -235,6 +235,14 @@ const shirtColors = {
   "balti-marskineliai-su-neptuno-herbu": ["Balta", "Mėlyna", "Juoda"],
 };
 
+const shirtColorImages = {
+  "balti-marskineliai-su-neptuno-herbu": {
+    Balta: "/el-parduotuve/images/22339.png",
+    Mėlyna: "/el-parduotuve/images/neptunas-marskineliai-melyna-demo.png",
+    Juoda: "/el-parduotuve/images/neptunas-marskineliai-juoda-demo.png",
+  },
+};
+
 const choiceMarkup = (label, name, values, selected) => {
   const options = values.map((value) => `
     <label>
@@ -265,9 +273,21 @@ const shirtColorMarkup = (item) => {
     return "";
   }
 
+  const images = Object.entries(shirtColorImages).find(([slug]) => sameSlug(slug, item.slug))?.[1] || {};
   const selected = colors.includes("Balta") ? "Balta" : colors[0];
+  const options = colors.map((color) => {
+    const image = images[color] || item.image;
 
-  return choiceMarkup("Spalva", "shirt-color", colors, selected);
+    return `
+      <label class="shop-product__color">
+        <input type="radio" name="shirt-color" value="${escapeHtml(color)}" data-shop-color-image="${escapeHtml(image)}" ${color === selected ? "checked" : ""} />
+        <img src="${escapeHtml(image)}" alt="" />
+        <span>${escapeHtml(color)}</span>
+      </label>
+    `;
+  }).join("");
+
+  return `<div class="shop-product__variants shop-product__colors"><p>Spalva</p><div role="radiogroup" aria-label="Spalva">${options}</div></div>`;
 };
 
 const variantMarkup = (item) => {
@@ -443,6 +463,23 @@ const bindPurchase = (root) => {
   paint();
 };
 
+const bindShirtColor = (root) => {
+  const cover = root.querySelector(".event-detail-cover img");
+
+  if (!cover || !root.querySelector("[data-shop-color-image]")) {
+    return;
+  }
+
+  root.addEventListener("change", (event) => {
+    const input = event.target.closest("[data-shop-color-image]");
+    const next = input?.getAttribute("data-shop-color-image");
+
+    if (next) {
+      cover.src = next;
+    }
+  });
+};
+
 const bindDates = (root) => {
   const more = root.querySelector("[data-shop-dates-more]");
   const labels = [...root.querySelectorAll(".shop-product__dates label")];
@@ -475,5 +512,6 @@ export const renderProduct = () => {
   const product = shopProducts.find((entry) => sameSlug(entry.slug, productSlug()));
   root.innerHTML = product ? renderProductPage(product) : renderMissing();
   bindPurchase(root);
+  bindShirtColor(root);
   bindDates(root);
 };
