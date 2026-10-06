@@ -298,7 +298,7 @@ const shirtDetailMarkup = (item) => {
   return `
     <div class="shop-product__detail">
       <button type="button" data-shop-detail aria-expanded="false" aria-controls="shop-shirt-detail">
-        <span>Daugiau apie marškinėlius</span>
+        <span>Detali informacija</span>
         <i data-lucide="chevron-down"></i>
       </button>
       <div id="shop-shirt-detail" class="shop-product__detail-panel" hidden>
