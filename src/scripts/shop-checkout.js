@@ -239,7 +239,7 @@ export const initShopCheckout = () => {
     }
   };
 
-  const paint = (focusSlug, focusQty, focusDate = "") => {
+  const paint = (focusSlug, focusQty, focusDate = "", focusSize = "", focusColor = "") => {
     const items = getCartLines();
 
     paintTotals();
@@ -253,12 +253,13 @@ export const initShopCheckout = () => {
         <a href="${productUrl(item.slug)}">${item.image ? `<img src="${escapeHtml(item.image)}" alt="" />` : ""}</a>
         <div>
           <a href="${productUrl(item.slug)}">${escapeHtml(item.title)}</a>
+          ${item.choiceLabel ? `<p class="shop-choice">${escapeHtml(item.choiceLabel)}</p>` : ""}
           ${item.dateLabel ? `<p class="checkout__date">${escapeHtml(item.dateLabel)}</p>` : ""}
           <p>${escapeHtml(item.priceLabel)}</p>
           <div class="shop-product__qty">
-            <button type="button" data-checkout-qty="minus" data-checkout-slug="${escapeHtml(item.slug)}" data-checkout-date="${escapeHtml(item.date)}" aria-label="${item.qty <= 1 ? "Pašalinti" : "Mažinti kiekį"}">−</button>
+            <button type="button" data-checkout-qty="minus" data-checkout-slug="${escapeHtml(item.slug)}" data-checkout-date="${escapeHtml(item.date || "")}" data-checkout-size="${escapeHtml(item.size || "")}" data-checkout-color="${escapeHtml(item.color || "")}" aria-label="${item.qty <= 1 ? "Pašalinti" : "Mažinti kiekį"}">−</button>
             <span>${item.qty}</span>
-            <button type="button" data-checkout-qty="plus" data-checkout-slug="${escapeHtml(item.slug)}" data-checkout-date="${escapeHtml(item.date)}" aria-label="Didinti kiekį" ${item.qty >= 99 ? "disabled" : ""}>+</button>
+            <button type="button" data-checkout-qty="plus" data-checkout-slug="${escapeHtml(item.slug)}" data-checkout-date="${escapeHtml(item.date || "")}" data-checkout-size="${escapeHtml(item.size || "")}" data-checkout-color="${escapeHtml(item.color || "")}" aria-label="Didinti kiekį" ${item.qty >= 99 ? "disabled" : ""}>+</button>
           </div>
         </div>
         <p>${formatCartMoney(item.price * item.qty)}</p>
@@ -281,7 +282,7 @@ export const initShopCheckout = () => {
     }
 
     const next = focusQty
-      ? lines.querySelector(`[data-checkout-qty="${focusQty}"][data-checkout-slug="${CSS.escape(focusSlug)}"][data-checkout-date="${CSS.escape(focusDate)}"]`)
+      ? lines.querySelector(`[data-checkout-qty="${focusQty}"][data-checkout-slug="${CSS.escape(focusSlug)}"][data-checkout-date="${CSS.escape(focusDate)}"][data-checkout-size="${CSS.escape(focusSize)}"][data-checkout-color="${CSS.escape(focusColor)}"]`)
       : null;
     (next || empty.querySelector("a") || summaryToggle)?.focus();
   };
@@ -465,7 +466,9 @@ export const initShopCheckout = () => {
 
     const slug = button.getAttribute("data-checkout-slug");
     const date = button.getAttribute("data-checkout-date") || "";
-    const current = getCartLines().find((item) => item.slug === slug && (item.date || "") === date)?.qty || 1;
+    const size = button.getAttribute("data-checkout-size") || "";
+    const color = button.getAttribute("data-checkout-color") || "";
+    const current = getCartLines().find((item) => item.slug === slug && (item.date || "") === date && (item.size || "") === size && (item.color || "") === color)?.qty || 1;
 
     if (button.getAttribute("data-checkout-qty") === "plus" && current >= 99) {
       return;
@@ -473,8 +476,8 @@ export const initShopCheckout = () => {
 
     const direction = button.getAttribute("data-checkout-qty");
     const next = current + (direction === "plus" ? 1 : -1);
-    setCartQty(slug, next, date);
-    paint(next > 0 ? slug : "", next > 0 ? direction : "", date);
+    setCartQty(slug, next, date, size, color);
+    paint(next > 0 ? slug : "", next > 0 ? direction : "", date, size, color);
   });
 
   root.querySelector("[data-checkout-coupon]").addEventListener("click", () => {
@@ -523,6 +526,7 @@ export const initShopCheckout = () => {
         linePrice: item.price * item.qty,
         image: item.image || "",
         date: item.dateLabel || "",
+        ...(item.choiceLabel ? { variant: item.choiceLabel } : {}),
       })),
       ticketsOnly: onlyTickets,
       hasExperience,

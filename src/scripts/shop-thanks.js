@@ -88,6 +88,7 @@ export const initShopThanks = () => {
         ${line.image ? `<img src="${escapeHtml(line.image)}" alt="" />` : "<span></span>"}
         <div>
           <p class="thanks__name">${escapeHtml(line.name)}</p>
+          ${line.variant ? `<p class="shop-choice">${escapeHtml(line.variant)}</p>` : ""}
           ${line.date ? `<p>${escapeHtml(line.date)}</p>` : ""}
           <p>${Number(line.qty) || 1} vnt.</p>
         </div>

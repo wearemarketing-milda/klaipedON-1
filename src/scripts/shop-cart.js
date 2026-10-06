@@ -3,6 +3,30 @@ import { relatedProducts } from "./shop-product.js";
 import { presentProduct, productUrl } from "./shop.js";
 
 const storageKey = "klaipedon-shop-cart";
+const shirtSlug = "balti-marskineliai-su-neptuno-herbu";
+const shirtSizes = new Set(["S", "M", "L", "XL", "XXL"]);
+const shirtColors = new Set(["Balta", "Mėlyna", "Juoda"]);
+
+const slugKey = (slug) => {
+  try {
+    return decodeURIComponent(slug);
+  } catch {
+    return slug;
+  }
+};
+
+const shirtChoice = (slug, size, color) => {
+  if (slugKey(slug) !== shirtSlug) {
+    return { size: "", color: "" };
+  }
+
+  return {
+    size: shirtSizes.has(size) ? size : "",
+    color: shirtColors.has(color) ? color : "",
+  };
+};
+
+export const formatShirtChoice = (size, color) => [size, color].filter(Boolean).join(" · ");
 
 const bagIcon = `
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -46,11 +70,29 @@ const loadCart = () => {
   try {
     const parsed = JSON.parse(localStorage.getItem(storageKey) || "[]");
     return Array.isArray(parsed)
-      ? parsed.filter((item) => item?.slug && item.qty > 0).map((item) => ({
-        slug: String(item.slug),
-        qty: Math.min(99, Number(item.qty) || 1),
-        date: String(item.date || ""),
-      }))
+      ? parsed.filter((item) => item?.slug && item.qty > 0).map((item) => {
+        const slug = String(item.slug);
+        const next = {
+          slug,
+          qty: Math.min(99, Number(item.qty) || 1),
+        };
+        const date = String(item.date || "");
+        const choice = shirtChoice(slug, String(item.size || ""), String(item.color || ""));
+
+        if (date) {
+          next.date = date;
+        }
+
+        if (choice.size) {
+          next.size = choice.size;
+        }
+
+        if (choice.color) {
+          next.color = choice.color;
+        }
+
+        return next;
+      })
       : [];
   } catch {
     return [];
@@ -74,14 +116,6 @@ const writeCart = (items) => {
 };
 
 const productFor = (slug) => shopProducts.find((entry) => entry.slug === slug);
-
-const slugKey = (slug) => {
-  try {
-    return decodeURIComponent(slug);
-  } catch {
-    return slug;
-  }
-};
 
 const shortTitle = (item) => {
   const title = item.title.replace(/^(?:Art print|Grafikos darbas)\s*\|\s*/i, "").trim();
@@ -116,7 +150,32 @@ const suggestionsFor = (items) => {
 const focusableInCart = () => [...panel.querySelectorAll("a[href], button:not([disabled])")]
   .filter((element) => element.getAttribute("tabindex") !== "-1" && !element.closest("[hidden]"));
 
-const sameLine = (item, slug, date = "") => item.slug === slug && String(item.date || "") === String(date || "");
+const sameLine = (item, slug, date = "", size = "", color = "") =>
+  item.slug === slug
+  && String(item.date || "") === String(date || "")
+  && String(item.size || "") === String(size || "")
+  && String(item.color || "") === String(color || "");
+
+const cartRecord = (slug, qty, date, size, color) => {
+  const next = { slug, qty };
+  const choice = shirtChoice(slug, size, color);
+
+  if (date) {
+    next.date = date;
+  }
+
+  if (choice.size) {
+    next.size = choice.size;
+  }
+
+  if (choice.color) {
+    next.color = choice.color;
+  }
+
+  return next;
+};
+
+const lineData = (item) => `data-shop-cart-slug="${escapeHtml(item.slug)}" data-shop-cart-date="${escapeHtml(item.date || "")}" data-shop-cart-size="${escapeHtml(item.size || "")}" data-shop-cart-color="${escapeHtml(item.color || "")}"`;
 
 const cartNote = (items) => {
   const hasExperience = items.some((item) => item.kind === "experience");
@@ -148,11 +207,16 @@ const lines = () => readCart()
       return null;
     }
 
+    const choice = shirtChoice(item.slug, item.size, item.color);
+
     return {
       ...presented,
       qty: item.qty,
       date: date?.id || "",
       dateLabel: date?.label || "",
+      size: choice.size,
+      color: choice.color,
+      choiceLabel: formatShirtChoice(choice.size, choice.color),
     };
   })
   .filter(Boolean);
@@ -164,6 +228,17 @@ const quantityFrom = (button) => {
 };
 
 const dateFrom = (button) => button.closest("[data-shop-product]")?.querySelector("[data-shop-date]:checked")?.value || "";
+
+const choiceFrom = (button) => {
+  const slug = button.getAttribute("data-shop-add") || "";
+  const root = button.closest("[data-shop-product]");
+
+  return shirtChoice(
+    slug,
+    root?.querySelector('input[name="shirt-size"]:checked')?.value || "",
+    root?.querySelector('input[name="shirt-color"]:checked')?.value || "",
+  );
+};
 
 let panel;
 let toggle;
@@ -200,7 +275,9 @@ const paint = () => {
   }
 
   document.querySelectorAll(".shop-card__cart[data-shop-add]").forEach((button) => {
-    const qty = items.find((item) => item.slug === button.getAttribute("data-shop-add"))?.qty || 0;
+    const qty = items
+      .filter((item) => item.slug === button.getAttribute("data-shop-add"))
+      .reduce((sum, item) => sum + item.qty, 0);
     const badge = button.querySelector(".shop-card__cart-count");
     button.classList.toggle("is-in-cart", qty > 0);
     button.setAttribute("aria-label", qty ? `Į krepšelį, ${countLabel(qty)}` : "Į krepšelį");
@@ -244,17 +321,18 @@ const paint = () => {
         </a>
         <div class="shop-cart__copy">
           <a href="${productUrl(item.slug)}">${escapeHtml(item.title)}</a>
+          ${item.choiceLabel ? `<p class="shop-choice">${escapeHtml(item.choiceLabel)}</p>` : ""}
           ${item.dateLabel ? `<p class="shop-cart__date">${escapeHtml(item.dateLabel)}</p>` : ""}
           <p>${escapeHtml(item.priceLabel)}</p>
           <div class="shop-product__qty">
-            <button type="button" data-shop-cart-qty="minus" data-shop-cart-slug="${escapeHtml(item.slug)}" data-shop-cart-date="${escapeHtml(item.date)}" aria-label="${item.qty <= 1 ? "Pašalinti" : "Mažinti kiekį"}">−</button>
+            <button type="button" data-shop-cart-qty="minus" ${lineData(item)} aria-label="${item.qty <= 1 ? "Pašalinti" : "Mažinti kiekį"}">−</button>
             <span>${item.qty}</span>
-            <button type="button" data-shop-cart-qty="plus" data-shop-cart-slug="${escapeHtml(item.slug)}" data-shop-cart-date="${escapeHtml(item.date)}" aria-label="Didinti kiekį" ${item.qty >= 99 ? "disabled" : ""}>+</button>
+            <button type="button" data-shop-cart-qty="plus" ${lineData(item)} aria-label="Didinti kiekį" ${item.qty >= 99 ? "disabled" : ""}>+</button>
           </div>
         </div>
         <div class="shop-cart__side">
           <p>${money(item.price * item.qty)}</p>
-          <button type="button" data-shop-cart-remove="${escapeHtml(item.slug)}" data-shop-cart-date="${escapeHtml(item.date)}">Pašalinti</button>
+          <button type="button" data-shop-cart-remove="${escapeHtml(item.slug)}" data-shop-cart-date="${escapeHtml(item.date || "")}" data-shop-cart-size="${escapeHtml(item.size || "")}" data-shop-cart-color="${escapeHtml(item.color || "")}">Pašalinti</button>
         </div>
       </article>
     `).join("")}${upsell}`
@@ -270,29 +348,29 @@ const paint = () => {
   }
 };
 
-const update = (slug, nextQty, focus, date = "") => {
+const update = (slug, nextQty, focus, date = "", size = "", color = "") => {
   const items = readCart();
-  const index = items.findIndex((item) => sameLine(item, slug, date));
+  const index = items.findIndex((item) => sameLine(item, slug, date, size, color));
   const qty = Math.min(99, nextQty);
 
   if (qty <= 0 && index >= 0) {
     items.splice(index, 1);
   } else if (index >= 0) {
-    items[index] = date ? { slug, qty, date } : { slug, qty };
+    items[index] = cartRecord(slug, qty, date, size, color);
   } else if (qty > 0) {
-    items.push(date ? { slug, qty, date } : { slug, qty });
+    items.push(cartRecord(slug, qty, date, size, color));
   }
 
   writeCart(items);
   paint();
 
   if (focus) {
-    const nextFocus = panel?.querySelector(`[data-shop-cart-qty="${focus}"][data-shop-cart-slug="${CSS.escape(slug)}"][data-shop-cart-date="${CSS.escape(date)}"]`);
+    const nextFocus = panel?.querySelector(`[data-shop-cart-qty="${focus}"][data-shop-cart-slug="${CSS.escape(slug)}"][data-shop-cart-date="${CSS.escape(date)}"][data-shop-cart-size="${CSS.escape(size)}"][data-shop-cart-color="${CSS.escape(color)}"]`);
     (nextFocus || panel?.querySelector(".shop-cart__close"))?.focus();
   }
 };
 
-const addToCart = (slug, amount, date = "") => {
+const addToCart = (slug, amount, date = "", size = "", color = "") => {
   const product = productFor(slug);
   const presented = product ? presentProduct(product) : null;
 
@@ -300,12 +378,15 @@ const addToCart = (slug, amount, date = "") => {
     return;
   }
 
-  if (presented.kind === "experience" && !presented.dates?.some((entry) => entry.id === date)) {
+  const experienceDate = presented.kind === "experience" ? date : "";
+
+  if (presented.kind === "experience" && !presented.dates?.some((entry) => entry.id === experienceDate)) {
     return;
   }
 
-  const current = readCart().find((item) => sameLine(item, slug, date))?.qty || 0;
-  update(slug, current + amount, null, date);
+  const choice = shirtChoice(slug, size, color);
+  const current = readCart().find((item) => sameLine(item, slug, experienceDate, choice.size, choice.color))?.qty || 0;
+  update(slug, current + amount, null, experienceDate, choice.size, choice.color);
   setOpen(true);
 };
 
@@ -390,7 +471,9 @@ export const initShopCart = () => {
     if (qtyButton) {
       const slug = qtyButton.getAttribute("data-shop-cart-slug");
       const date = qtyButton.getAttribute("data-shop-cart-date") || "";
-      const current = readCart().find((item) => sameLine(item, slug, date))?.qty || 1;
+      const size = qtyButton.getAttribute("data-shop-cart-size") || "";
+      const color = qtyButton.getAttribute("data-shop-cart-color") || "";
+      const current = readCart().find((item) => sameLine(item, slug, date, size, color))?.qty || 1;
       const direction = qtyButton.getAttribute("data-shop-cart-qty");
 
       if (direction === "plus" && current >= 99) {
@@ -398,14 +481,21 @@ export const initShopCart = () => {
       }
 
       const next = current + (direction === "plus" ? 1 : -1);
-      update(slug, next, next > 0 ? direction : null, date);
+      update(slug, next, next > 0 ? direction : null, date, size, color);
       return;
     }
 
     const remove = event.target.closest("[data-shop-cart-remove]");
 
     if (remove) {
-      update(remove.getAttribute("data-shop-cart-remove"), 0, null, remove.getAttribute("data-shop-cart-date") || "");
+      update(
+        remove.getAttribute("data-shop-cart-remove"),
+        0,
+        null,
+        remove.getAttribute("data-shop-cart-date") || "",
+        remove.getAttribute("data-shop-cart-size") || "",
+        remove.getAttribute("data-shop-cart-color") || "",
+      );
     }
   });
 
@@ -418,7 +508,8 @@ export const initShopCart = () => {
 
     event.preventDefault();
     event.stopPropagation();
-    addToCart(add.getAttribute("data-shop-add"), quantityFrom(add), dateFrom(add));
+    const choice = choiceFrom(add);
+    addToCart(add.getAttribute("data-shop-add"), quantityFrom(add), dateFrom(add), choice.size, choice.color);
   });
 
   document.addEventListener("keydown", (event) => {
@@ -465,7 +556,7 @@ export const initShopCart = () => {
 
 export const formatCartMoney = money;
 export const getCartLines = () => lines();
-export const setCartQty = (slug, qty, date = "") => update(slug, qty, null, date);
+export const setCartQty = (slug, qty, date = "", size = "", color = "") => update(slug, qty, null, date, size, color);
 
 export const clearCart = () => {
   try {
