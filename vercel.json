@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/el-parduotuve/:slug((?!preke$|atsiskaitymas$|aciu$)[^/]+)",
+      "destination": "/el-parduotuve/preke/index.html"
+    },
+    {
+      "source": "/el-parduotuve/:slug((?!preke$|atsiskaitymas$|aciu$)[^/]+)/",
+      "destination": "/el-parduotuve/preke/index.html"
+    }
+  ]
+}

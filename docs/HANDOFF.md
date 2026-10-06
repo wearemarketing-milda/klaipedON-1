@@ -49,7 +49,8 @@ Duomenys ir turtai:
 Be šitų bendrų failų srautas neįsijungia:
 
 - `src/main.js` — paleidžia parduotuvės skriptus ir registruoja `Truck` bei `ShieldCheck` ikonas
-- `vite.config.js` — keturi build įėjimai ir perrašymas, kad prekės slug nepavirstų atsiskaitymo ar padėkos puslapiu
+- `vite.config.js` — keturi build įėjimai ir perrašymas vietiniame serveryje, kad prekės slug nepavirstų atsiskaitymo ar padėkos puslapiu
+- `vercel.json` — tas pats perrašymas produkcijoje: `/el-parduotuve/{slug}/` atidaro prekės šabloną
 - `src/styles.css` — parduotuvės taisyklės pridėtos failo gale, po `@layer` blokų
 - `src/scripts/site-ui.js` — filtrų mygtuko tekstas parduotuvėje ir dalijimosi mygtukas
 
