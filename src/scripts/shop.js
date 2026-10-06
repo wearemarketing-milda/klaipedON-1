@@ -20,6 +20,21 @@ const foldText = (value) =>
     .replaceAll("ū", "u")
     .replaceAll("ž", "z");
 
+const dateCountLabel = (count) => {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+
+  if (mod10 === 1 && mod100 !== 11) {
+    return `${count} data`;
+  }
+
+  if (mod10 >= 2 && mod10 <= 9 && (mod100 < 12 || mod100 > 20)) {
+    return `${count} datos`;
+  }
+
+  return `${count} datų`;
+};
+
 const productCountLabel = (count) => {
   const mod10 = count % 10;
   const mod100 = count % 100;
@@ -53,6 +68,10 @@ export const presentProduct = (product) => {
   let dateLabel = "";
   let timeLabel = "";
 
+  let dates = Array.isArray(product.dates)
+    ? product.dates.filter((entry) => entry?.id && entry?.label).map((entry) => ({ id: String(entry.id), label: String(entry.label) }))
+    : [];
+
   if (kind === "experience") {
     const match = title.match(experienceDate);
 
@@ -61,15 +80,23 @@ export const presentProduct = (product) => {
       dateLabel = `${month} ${match[2]} d.`;
       timeLabel = match[3] ? `${match[3].padStart(2, "0")}:${match[4]}` : "";
       title = title.slice(0, match.index).replace(/[\s|–—-]+$/u, "").trim();
+
+      if (!dates.length) {
+        dates = [{
+          id: `${month}-${match[2]}-${timeLabel || "00"}`.toLocaleLowerCase("lt").replaceAll(" ", "-"),
+          label: [dateLabel, timeLabel].filter(Boolean).join(", "),
+        }];
+      }
     }
   }
 
-  return { ...product, title, kind, dateLabel, timeLabel };
+  return { ...product, title, kind, dates, dateLabel: dates[0]?.label || dateLabel, timeLabel };
 };
 
 export const renderCard = (product, order) => {
   const item = presentProduct(product);
-  const when = [item.dateLabel, item.timeLabel].filter(Boolean).join(", ");
+  const dateCount = item.dates?.length || 0;
+  const when = dateCount > 1 ? dateCountLabel(dateCount) : (item.dates?.[0]?.label || "");
   const meta = item.kind === "experience" && when
     ? `<dl class="shop-card__meta"><div><dt><i data-lucide="calendar-days"></i><span>Data</span></dt><dd>${escapeHtml(when)}</dd></div></dl>`
     : item.kind === "rental"

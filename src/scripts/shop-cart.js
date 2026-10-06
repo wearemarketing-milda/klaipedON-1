@@ -46,7 +46,11 @@ const loadCart = () => {
   try {
     const parsed = JSON.parse(localStorage.getItem(storageKey) || "[]");
     return Array.isArray(parsed)
-      ? parsed.filter((item) => item?.slug && item.qty > 0).map((item) => ({ slug: String(item.slug), qty: Math.min(99, Number(item.qty) || 1) }))
+      ? parsed.filter((item) => item?.slug && item.qty > 0).map((item) => ({
+        slug: String(item.slug),
+        qty: Math.min(99, Number(item.qty) || 1),
+        date: String(item.date || ""),
+      }))
       : [];
   } catch {
     return [];
@@ -112,23 +116,39 @@ const suggestionsFor = (items) => {
 const focusableInCart = () => [...panel.querySelectorAll("a[href], button:not([disabled])")]
   .filter((element) => element.getAttribute("tabindex") !== "-1" && !element.closest("[hidden]"));
 
+const sameLine = (item, slug, date = "") => item.slug === slug && String(item.date || "") === String(date || "");
+
 const lines = () => readCart()
   .map((item) => {
     const product = productFor(item.slug);
+    const presented = product ? presentProduct(product) : null;
 
-    if (!product || presentProduct(product).kind !== "goods") {
+    if (!presented || presented.kind === "rental") {
       return null;
     }
 
-    return { ...presentProduct(product), qty: item.qty };
+    const date = presented.dates?.find((entry) => entry.id === item.date);
+
+    if (presented.kind === "experience" && !date) {
+      return null;
+    }
+
+    return {
+      ...presented,
+      qty: item.qty,
+      date: date?.id || "",
+      dateLabel: date?.label || "",
+    };
   })
   .filter(Boolean);
 
 const quantityFrom = (button) => {
-  const scope = button.closest("[data-shop-product]");
-  const value = scope?.querySelector("[data-shop-qty-value]")?.textContent;
+  const group = button.closest(".shop-product__buy, .shop-product__bar-actions");
+  const value = (group || button.closest("[data-shop-product]"))?.querySelector("[data-shop-qty-value]")?.textContent;
   return Math.max(1, Math.min(99, Number(value) || 1));
 };
+
+const dateFrom = (button) => button.closest("[data-shop-product]")?.querySelector("[data-shop-date]:checked")?.value || "";
 
 let panel;
 let toggle;
@@ -209,16 +229,17 @@ const paint = () => {
         </a>
         <div class="shop-cart__copy">
           <a href="${productUrl(item.slug)}">${escapeHtml(item.title)}</a>
+          ${item.dateLabel ? `<p class="shop-cart__date">${escapeHtml(item.dateLabel)}</p>` : ""}
           <p>${escapeHtml(item.priceLabel)}</p>
           <div class="shop-product__qty">
-            <button type="button" data-shop-cart-qty="minus" data-shop-cart-slug="${escapeHtml(item.slug)}" aria-label="${item.qty <= 1 ? "Pašalinti" : "Mažinti kiekį"}">−</button>
+            <button type="button" data-shop-cart-qty="minus" data-shop-cart-slug="${escapeHtml(item.slug)}" data-shop-cart-date="${escapeHtml(item.date)}" aria-label="${item.qty <= 1 ? "Pašalinti" : "Mažinti kiekį"}">−</button>
             <span>${item.qty}</span>
-            <button type="button" data-shop-cart-qty="plus" data-shop-cart-slug="${escapeHtml(item.slug)}" aria-label="Didinti kiekį" ${item.qty >= 99 ? "disabled" : ""}>+</button>
+            <button type="button" data-shop-cart-qty="plus" data-shop-cart-slug="${escapeHtml(item.slug)}" data-shop-cart-date="${escapeHtml(item.date)}" aria-label="Didinti kiekį" ${item.qty >= 99 ? "disabled" : ""}>+</button>
           </div>
         </div>
         <div class="shop-cart__side">
           <p>${money(item.price * item.qty)}</p>
-          <button type="button" data-shop-cart-remove="${escapeHtml(item.slug)}">Pašalinti</button>
+          <button type="button" data-shop-cart-remove="${escapeHtml(item.slug)}" data-shop-cart-date="${escapeHtml(item.date)}">Pašalinti</button>
         </div>
       </article>
     `).join("")}${upsell}`
@@ -229,37 +250,42 @@ const paint = () => {
   footer.querySelector("[data-shop-cart-total]").textContent = money(total);
 };
 
-const update = (slug, nextQty, focus) => {
+const update = (slug, nextQty, focus, date = "") => {
   const items = readCart();
-  const index = items.findIndex((item) => item.slug === slug);
+  const index = items.findIndex((item) => sameLine(item, slug, date));
   const qty = Math.min(99, nextQty);
 
   if (qty <= 0 && index >= 0) {
     items.splice(index, 1);
   } else if (index >= 0) {
-    items[index] = { slug, qty };
+    items[index] = date ? { slug, qty, date } : { slug, qty };
   } else if (qty > 0) {
-    items.push({ slug, qty });
+    items.push(date ? { slug, qty, date } : { slug, qty });
   }
 
   writeCart(items);
   paint();
 
   if (focus) {
-    const nextFocus = panel?.querySelector(`[data-shop-cart-qty="${focus}"][data-shop-cart-slug="${CSS.escape(slug)}"]`);
+    const nextFocus = panel?.querySelector(`[data-shop-cart-qty="${focus}"][data-shop-cart-slug="${CSS.escape(slug)}"][data-shop-cart-date="${CSS.escape(date)}"]`);
     (nextFocus || panel?.querySelector(".shop-cart__close"))?.focus();
   }
 };
 
-const addToCart = (slug, amount) => {
+const addToCart = (slug, amount, date = "") => {
   const product = productFor(slug);
+  const presented = product ? presentProduct(product) : null;
 
-  if (!product || presentProduct(product).kind !== "goods") {
+  if (!presented || presented.kind === "rental") {
     return;
   }
 
-  const current = readCart().find((item) => item.slug === slug)?.qty || 0;
-  update(slug, current + amount);
+  if (presented.kind === "experience" && !presented.dates?.some((entry) => entry.id === date)) {
+    return;
+  }
+
+  const current = readCart().find((item) => sameLine(item, slug, date))?.qty || 0;
+  update(slug, current + amount, null, date);
   setOpen(true);
 };
 
@@ -343,7 +369,8 @@ export const initShopCart = () => {
 
     if (qtyButton) {
       const slug = qtyButton.getAttribute("data-shop-cart-slug");
-      const current = readCart().find((item) => item.slug === slug)?.qty || 1;
+      const date = qtyButton.getAttribute("data-shop-cart-date") || "";
+      const current = readCart().find((item) => sameLine(item, slug, date))?.qty || 1;
       const direction = qtyButton.getAttribute("data-shop-cart-qty");
 
       if (direction === "plus" && current >= 99) {
@@ -351,14 +378,14 @@ export const initShopCart = () => {
       }
 
       const next = current + (direction === "plus" ? 1 : -1);
-      update(slug, next, next > 0 ? direction : null);
+      update(slug, next, next > 0 ? direction : null, date);
       return;
     }
 
     const remove = event.target.closest("[data-shop-cart-remove]");
 
     if (remove) {
-      update(remove.getAttribute("data-shop-cart-remove"), 0);
+      update(remove.getAttribute("data-shop-cart-remove"), 0, null, remove.getAttribute("data-shop-cart-date") || "");
     }
   });
 
@@ -371,7 +398,7 @@ export const initShopCart = () => {
 
     event.preventDefault();
     event.stopPropagation();
-    addToCart(add.getAttribute("data-shop-add"), quantityFrom(add));
+    addToCart(add.getAttribute("data-shop-add"), quantityFrom(add), dateFrom(add));
   });
 
   document.addEventListener("keydown", (event) => {
@@ -418,7 +445,7 @@ export const initShopCart = () => {
 
 export const formatCartMoney = money;
 export const getCartLines = () => lines();
-export const setCartQty = (slug, qty) => update(slug, qty);
+export const setCartQty = (slug, qty, date = "") => update(slug, qty, null, date);
 
 export const clearCart = () => {
   try {

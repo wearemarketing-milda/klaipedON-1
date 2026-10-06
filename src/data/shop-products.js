@@ -6,6 +6,9 @@ export const shopProducts = [
     "summary": "AB „Klaipėdos energija“ kviečia į ekskursiją po šiluminės elektrinės kompleksą – vienintelį tokį objektą Klaipėdoje! Ekskursijų metu – neeilinė proga iš arčiau pažinti uostamiesčio „širdyje”, ant Danės upės kranto, esančią teritoriją, kurioje gimė Klaipėdos šviesa ir šiluma. Lankytojai išgirs įtraukiančių pasakojimų apie pramonės istoriją, išvys tarpukario turbinas–generatorius bei įspūdingą, jau daugiau nei pusę amžiaus skaičiuojantį 120 metrų aukščio gelžbetoninį kaminą. Ekskursijų dalyviai turės galimybę patekti į erdves, kurios paprastai lieka uždaros lankytojams. Paskutinis ekskursijos sustojimas — Leičių MemelHaus craft bravoras, kuris įsikūręs toje pačioje istorinėje Klaipėdos energijos erdvėje. Čia lauks trumpa alaus degustacija – ją praves pats bravoro pivorius: 2 skirtingų stilių alus ir mini-kvizas apie tai, ką ką tik matėte ekskursijoje. Ekskursijos trukmė – 2 val. Ekskursija skirta asmenims nuo 20 metų. Susitikimo vieta – Danės g. 8, https://maps.app.goo.gl/8wy2a7sYFvvY1goJ7",
     "category": "Ekskursijos",
     "categorySlug": "ekskursijos",
+    "dates": [
+      { "id": "2026-10-15-18", "label": "Spalio 15 d., 18:00" }
+    ],
     "price": 32.0,
     "priceLabel": "32 €",
     "image": "/el-parduotuve/images/47468.jpg"

@@ -179,7 +179,12 @@ export const initShopCheckout = () => {
 
   const goodsTotal = () => getCartLines().reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  const deliveryFee = () => deliveryFees[deliveryMethod()] ?? deliveryFees.omniva;
+  const ticketsOnly = () => {
+    const items = getCartLines();
+    return items.length > 0 && items.every((item) => item.kind === "experience");
+  };
+
+  const deliveryFee = () => (ticketsOnly() ? 0 : (deliveryFees[deliveryMethod()] ?? deliveryFees.omniva));
 
   const formatSummaryMoney = (value) => {
     const amount = Math.round(Number(value) * 100);
@@ -202,9 +207,21 @@ export const initShopCheckout = () => {
     root.querySelectorAll("[data-checkout-goods]").forEach((node) => {
       node.textContent = formatSummaryMoney(goods + shipping);
     });
+
+    const onlyTickets = ticketsOnly();
+    const deliverySection = root.querySelector("[data-checkout-delivery-section]");
+    const shippingRow = root.querySelector("[data-checkout-shipping-row]");
+
+    if (deliverySection) {
+      deliverySection.hidden = onlyTickets;
+    }
+
+    if (shippingRow) {
+      shippingRow.hidden = onlyTickets;
+    }
   };
 
-  const paint = (focusSlug, focusQty) => {
+  const paint = (focusSlug, focusQty, focusDate = "") => {
     const items = getCartLines();
 
     paintTotals();
@@ -218,11 +235,12 @@ export const initShopCheckout = () => {
         <a href="${productUrl(item.slug)}">${item.image ? `<img src="${escapeHtml(item.image)}" alt="" />` : ""}</a>
         <div>
           <a href="${productUrl(item.slug)}">${escapeHtml(item.title)}</a>
+          ${item.dateLabel ? `<p class="checkout__date">${escapeHtml(item.dateLabel)}</p>` : ""}
           <p>${escapeHtml(item.priceLabel)}</p>
           <div class="shop-product__qty">
-            <button type="button" data-checkout-qty="minus" data-checkout-slug="${escapeHtml(item.slug)}" aria-label="${item.qty <= 1 ? "Pašalinti" : "Mažinti kiekį"}">−</button>
+            <button type="button" data-checkout-qty="minus" data-checkout-slug="${escapeHtml(item.slug)}" data-checkout-date="${escapeHtml(item.date)}" aria-label="${item.qty <= 1 ? "Pašalinti" : "Mažinti kiekį"}">−</button>
             <span>${item.qty}</span>
-            <button type="button" data-checkout-qty="plus" data-checkout-slug="${escapeHtml(item.slug)}" aria-label="Didinti kiekį" ${item.qty >= 99 ? "disabled" : ""}>+</button>
+            <button type="button" data-checkout-qty="plus" data-checkout-slug="${escapeHtml(item.slug)}" data-checkout-date="${escapeHtml(item.date)}" aria-label="Didinti kiekį" ${item.qty >= 99 ? "disabled" : ""}>+</button>
           </div>
         </div>
         <p>${formatCartMoney(item.price * item.qty)}</p>
@@ -245,7 +263,7 @@ export const initShopCheckout = () => {
     }
 
     const next = focusQty
-      ? lines.querySelector(`[data-checkout-qty="${focusQty}"][data-checkout-slug="${CSS.escape(focusSlug)}"]`)
+      ? lines.querySelector(`[data-checkout-qty="${focusQty}"][data-checkout-slug="${CSS.escape(focusSlug)}"][data-checkout-date="${CSS.escape(focusDate)}"]`)
       : null;
     (next || empty.querySelector("a") || summaryToggle)?.focus();
   };
@@ -306,7 +324,10 @@ export const initShopCheckout = () => {
     let firstInvalid = null;
     const courier = deliveryMethod() === "courier";
 
-    if (!courier && !selectedLocker) {
+    if (ticketsOnly()) {
+      showNote("checkout-locker-error", "");
+      addressRules.forEach(([name]) => showError(name, ""));
+    } else if (!courier && !selectedLocker) {
       const note = showNote("checkout-locker-error", "Pasirinkite paštomatą.");
       firstInvalid = lockerSearch;
       note.scrollIntoView({ block: "nearest" });
@@ -314,9 +335,9 @@ export const initShopCheckout = () => {
       showNote("checkout-locker-error", "");
     }
 
-    if (courier) {
+    if (!ticketsOnly() && courier) {
       firstInvalid = validateFields(addressRules, firstInvalid);
-    } else {
+    } else if (!ticketsOnly()) {
       addressRules.forEach(([name]) => showError(name, ""));
     }
 
@@ -425,7 +446,8 @@ export const initShopCheckout = () => {
     }
 
     const slug = button.getAttribute("data-checkout-slug");
-    const current = getCartLines().find((item) => item.slug === slug)?.qty || 1;
+    const date = button.getAttribute("data-checkout-date") || "";
+    const current = getCartLines().find((item) => item.slug === slug && (item.date || "") === date)?.qty || 1;
 
     if (button.getAttribute("data-checkout-qty") === "plus" && current >= 99) {
       return;
@@ -433,8 +455,8 @@ export const initShopCheckout = () => {
 
     const direction = button.getAttribute("data-checkout-qty");
     const next = current + (direction === "plus" ? 1 : -1);
-    setCartQty(slug, next);
-    paint(next > 0 ? slug : "", next > 0 ? direction : "");
+    setCartQty(slug, next, date);
+    paint(next > 0 ? slug : "", next > 0 ? direction : "", date);
   });
 
   root.querySelector("[data-checkout-coupon]").addEventListener("click", () => {
@@ -466,7 +488,9 @@ export const initShopCheckout = () => {
       return;
     }
 
-    const courier = deliveryMethod() === "courier";
+    const onlyTickets = ticketsOnly();
+    const hasExperience = items.some((item) => item.kind === "experience");
+    const courier = !onlyTickets && deliveryMethod() === "courier";
     const locker = chosenLocker();
     const paymentValue = form.elements.namedItem("payment").value;
     const method = paymentLabels[paymentValue] || "Paysera";
@@ -480,16 +504,21 @@ export const initShopCheckout = () => {
         qty: item.qty,
         linePrice: item.price * item.qty,
         image: item.image || "",
+        date: item.dateLabel || "",
       })),
-      deliveryLabel: courier ? "Kurjeris į adresą" : "Omniva paštomatas",
+      ticketsOnly: onlyTickets,
+      reference: hasExperience ? `K${Date.now().toString(36).toUpperCase()}` : "",
+      deliveryLabel: onlyTickets ? "" : (courier ? "Kurjeris į adresą" : "Omniva paštomatas"),
       deliveryPrice: shipping,
       goodsTotal: goods,
       grandTotal: goods + shipping,
       email: field("email"),
       firstName: field("firstName"),
-      deliveryDetail: courier
-        ? { name: "", address: [field("address"), field("city"), field("postcode")].filter(Boolean).join(", ") }
-        : { name: locker?.name || "", address: locker ? `${locker.address}, ${locker.city}` : "" },
+      deliveryDetail: onlyTickets
+        ? { name: "", address: "" }
+        : courier
+          ? { name: "", address: [field("address"), field("city"), field("postcode")].filter(Boolean).join(", ") }
+          : { name: locker?.name || "", address: locker ? `${locker.address}, ${locker.city}` : "" },
       paymentLabel: method === "Per banką" && bank ? `${method}, ${bank}` : method,
     };
 

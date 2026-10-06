@@ -65,6 +65,8 @@ export const initShopThanks = () => {
   const grand = root.querySelector("[data-thanks-grand]");
   const delivery = root.querySelector("[data-thanks-delivery]");
   const payment = root.querySelector("[data-thanks-payment]");
+  const ticket = root.querySelector("[data-thanks-ticket]");
+  const next = root.querySelector("[data-thanks-next]");
   const detail = order.deliveryDetail && typeof order.deliveryDetail === "object" ? order.deliveryDetail : {};
 
   if (title) {
@@ -83,6 +85,7 @@ export const initShopThanks = () => {
         ${line.image ? `<img src="${escapeHtml(line.image)}" alt="" />` : "<span></span>"}
         <div>
           <p class="thanks__name">${escapeHtml(line.name)}</p>
+          ${line.date ? `<p>${escapeHtml(line.date)}</p>` : ""}
           <p>${Number(line.qty) || 1} vnt.</p>
         </div>
         <p>${formatCartMoney(line.linePrice)}</p>
@@ -98,6 +101,7 @@ export const initShopThanks = () => {
     shippingLabel.textContent = order.deliveryLabel
       ? `Pristatymas · ${order.deliveryLabel}`
       : "Pristatymas";
+    shippingLabel.closest("div").hidden = Boolean(order.ticketsOnly);
   }
 
   if (shipping) {
@@ -121,6 +125,18 @@ export const initShopThanks = () => {
   if (payment) {
     payment.textContent = String(order.paymentLabel || "").trim();
     payment.hidden = !payment.textContent;
+  }
+
+  if (ticket) {
+    const reference = String(order.reference || "").trim();
+    ticket.hidden = !reference;
+    ticket.textContent = reference
+      ? `Užsakymo numeris ${reference}. Jis ir yra bilietas. Gidas jį patikrins vietoje.`
+      : "";
+  }
+
+  if (next) {
+    next.hidden = Boolean(order.ticketsOnly);
   }
 
   orderView.hidden = false;

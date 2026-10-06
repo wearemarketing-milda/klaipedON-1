@@ -133,7 +133,6 @@ const rentalBody = (text) => text
 
 const experienceRows = (item, details) => {
   const summary = item.summary || "";
-  const when = [item.dateLabel, item.timeLabel].filter(Boolean).join(", ");
   const duration = summary.match(/trukmė\s*[–—-]\s*([^.]*)/i)?.[1].trim() ?? "";
   const age = summary.match(/skirta asmenims\s+([^.]*)/i)?.[1].trim() ?? "";
   const styleCount = summary.match(/(\d+)\s+skirtingų stilių/i)?.[1];
@@ -147,7 +146,6 @@ const experienceRows = (item, details) => {
     : "";
 
   return [
-    when ? ["calendar-days", "Data", escapeHtml(when)] : "",
     duration ? ["clock", "Trukmė", escapeHtml(duration)] : "",
     age ? ["users", "Skirta", escapeHtml(age.charAt(0).toUpperCase() + age.slice(1))] : "",
     included ? ["check", "Įskaičiuota", escapeHtml(included)] : "",
@@ -192,6 +190,26 @@ const quantityMarkup = () => `
   </div>
 `;
 
+const dateMarkup = (item) => {
+  if (item.kind !== "experience" || !item.dates?.length) {
+    return "";
+  }
+
+  return `
+    <div class="shop-product__dates">
+      <p>Data</p>
+      <div role="radiogroup" aria-label="Ekskursijos data">
+        ${item.dates.map((date, index) => `
+          <label>
+            <input type="radio" name="experience-date" value="${escapeHtml(date.id)}" data-shop-date ${index === 0 ? "checked" : ""} />
+            <span>${escapeHtml(date.label)}</span>
+          </label>
+        `).join("")}
+      </div>
+    </div>
+  `;
+};
+
 const actionMarkup = (item) => {
   if (item.kind === "rental") {
     const subject = encodeURIComponent(`Nuoma: ${item.title}`);
@@ -199,10 +217,26 @@ const actionMarkup = (item) => {
   }
 
   if (item.kind === "experience") {
-    return `<button class="event-detail-card__cta" type="button">Rezervuoti</button>`;
+    return `<button class="event-detail-card__cta" type="button" data-shop-add="${escapeHtml(item.slug)}">Registruotis</button>`;
   }
 
   return `<button class="event-detail-card__cta" type="button" data-shop-add="${escapeHtml(item.slug)}">Į krepšelį</button>`;
+};
+
+const shirtSizes = {
+  "balti-marskineliai-su-neptuno-herbu": ["XXL"],
+};
+
+const shirtSizeMarkup = (item) => {
+  const sizes = Object.entries(shirtSizes).find(([slug]) => sameSlug(slug, item.slug))?.[1];
+
+  if (!sizes?.length) {
+    return "";
+  }
+
+  const options = sizes.map((size) => `<span aria-current="true">${escapeHtml(size)}</span>`).join("");
+
+  return `<div class="shop-product__variants"><p>Dydis</p><div role="group" aria-label="Dydis">${options}</div></div>`;
 };
 
 const variantMarkup = (item) => {
@@ -232,19 +266,20 @@ const renderProductPage = (product) => {
   const details = readSummary(item.summary || "");
   const body = item.kind === "rental" ? rentalBody(details.text) : details.text;
   const isLongCopy = body.length > 160;
-  const facts = catalogFacts[item.slug] || Object.entries(catalogFacts).find(([slug]) => sameSlug(slug, item.slug))?.[1] || [];
+  const sizeMarkup = shirtSizeMarkup(item);
+  const facts = (catalogFacts[item.slug] || Object.entries(catalogFacts).find(([slug]) => sameSlug(slug, item.slug))?.[1] || [])
+    .filter((fact) => !(sizeMarkup && /^dydis\b/i.test(fact)));
   const noteRepeatsFact = facts.length > 0 && body.length < 48 && /dydis|spalv|dydž/i.test(body);
-  const showNote = item.kind === "goods" && !isLongCopy && body && !noteRepeatsFact;
+  const noteRepeatsSize = Boolean(sizeMarkup) && body.length < 48 && /^dydis\b/i.test(body);
+  const showNote = item.kind === "goods" && !isLongCopy && body && !noteRepeatsFact && !noteRepeatsSize;
   const rate = item.kind === "rental" ? rentalRate(item.summary || "") : "";
   const context = item.kind === "rental"
     ? `${rate ? `${rate}. ` : ""}Dėl nuomos parašykite Klaipėdos TIC konsultantui.`
-    : item.kind === "experience"
-      ? "Su PVM."
-      : "";
+    : "";
   const barNote = item.kind === "rental"
     ? [rate, "Rašykite konsultantui"].filter(Boolean).join(" · ")
     : item.kind === "experience"
-      ? [item.dateLabel, item.timeLabel].filter(Boolean).join(", ")
+      ? (item.dates?.length > 1 ? "Pasirinkite datą" : (item.dates?.[0]?.label || ""))
       : "";
   const rows = item.kind === "experience" ? experienceRows(item, details) : [];
   const related = relatedProducts(item.slug);
@@ -276,13 +311,16 @@ const renderProductPage = (product) => {
           <p class="shop-product__price" data-acf-field="product_price">${escapeHtml(item.priceLabel)}</p>
           ${context ? `<p class="shop-product__context">${escapeHtml(context)}</p>` : ""}
           ${facts.length ? `<p class="shop-product__facts">${facts.map((fact) => escapeHtml(fact)).join("<br>")}</p>` : ""}
+          ${sizeMarkup}
           ${variantMarkup(item)}
+          ${dateMarkup(item)}
           ${meta ? `<dl class="event-detail-meta">${meta}</dl>` : ""}
           ${showNote ? `<p class="shop-product__note">${escapeHtml(body)}</p>` : ""}
           ${item.kind === "rental" && body && !isLongCopy ? `<p class="shop-product__note">${escapeHtml(body)}</p>` : ""}
           <div class="shop-product__buy">
-            ${item.kind === "goods" ? quantityMarkup() : ""}
+            ${item.kind === "rental" ? "" : quantityMarkup()}
             ${actionMarkup(item)}
+            ${item.kind === "experience" ? `<p class="shop-product__ticket">Bilietas yra užsakymo numeris. Gidas jį patikrins vietoje.</p>` : ""}
             ${item.kind === "goods" ? `
               <ul class="shop-product__assurances">
                 <li><i data-lucide="truck"></i><span>Pristatome per 1–2 darbo dienas</span></li>
@@ -320,7 +358,7 @@ const renderProductPage = (product) => {
         ${barNote ? `<p class="shop-product__bar-note">${escapeHtml(barNote)}</p>` : ""}
       </div>
       <div class="shop-product__bar-actions">
-        ${item.kind === "goods" ? quantityMarkup() : ""}
+        ${item.kind === "rental" ? "" : quantityMarkup()}
         ${actionMarkup(item)}
       </div>
     </div>

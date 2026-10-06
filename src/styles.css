@@ -7976,6 +7976,61 @@
   color: var(--color-paper);
 }
 
+.shop-product__dates {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.shop-product__dates p {
+  margin: 0;
+  color: rgba(7, 26, 68, 0.72);
+  font-size: 0.92rem;
+}
+
+.shop-product__dates div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.shop-product__dates label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--color-night);
+  background: var(--color-paper);
+  color: var(--color-night);
+  cursor: pointer;
+}
+
+.shop-product__dates input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.shop-product__dates label:has(input:checked) {
+  background: var(--color-night);
+  color: var(--color-paper);
+}
+
+.shop-product__dates label:has(input:focus-visible) {
+  outline: 2px solid var(--color-day);
+  outline-offset: 2px;
+}
+
+.shop-product__ticket {
+  flex: 1 0 100%;
+  margin: 0;
+  color: rgba(7, 26, 68, 0.72);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
 .shop-product__buy {
   display: flex;
   flex-wrap: wrap;
@@ -8393,6 +8448,11 @@ html.is-shop-cart-open body {
   font-size: 0.95rem;
 }
 
+.shop-cart__date {
+  color: var(--color-night);
+  font-weight: 600;
+}
+
 .shop-cart__copy .shop-product__qty button,
 .shop-cart__copy .shop-product__qty span {
   min-width: 1.75rem;
@@ -8661,7 +8721,9 @@ html.is-shop-cart-open body {
 .checkout__coupon-note[hidden],
 .checkout__panel[hidden],
 .checkout__banks[hidden],
-.checkout__hint[hidden] {
+.checkout__hint[hidden],
+.checkout__form section[hidden],
+.checkout__totals div[hidden] {
   display: none !important;
 }
 
@@ -9189,6 +9251,11 @@ html.is-shop-cart-open body {
   font-size: 0.92rem;
 }
 
+.checkout__date {
+  color: var(--color-night);
+  font-weight: 600;
+}
+
 .checkout__line > p {
   margin: 0;
   color: var(--color-night);
@@ -9492,10 +9559,15 @@ html.is-shop-cart-open body {
   line-height: 1.5;
 }
 
-.thanks__lead {
+.thanks__lead,
+.thanks__ticket {
   margin-top: 0.85rem;
   max-width: 36rem;
   font-size: 1.08rem;
+}
+
+.thanks__ticket {
+  font-weight: 600;
 }
 
 .thanks__card {

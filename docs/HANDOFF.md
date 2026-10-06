@@ -62,6 +62,7 @@ Prototipo taisyklės, kurių nereikia laikyti galutinėmis WooCommerce kainomis:
 - Mokėjimas numatytas per Paysera (bankas, Apple Pay, kortelė, Paysera paskyra). Kortelės duomenų forma čia nerenka.
 - Krepšelis laikomas `localStorage` rakte `klaipedon-shop-cart`. Atsiskaitymo juodraštis yra `sessionStorage` raktas `klaipedon-checkout`, padėkos suvestinė — `klaipedon-order`.
 - Nėra paskyros, DPD, atsiėmimo parduotuvėje ir veikiančio nuolaidos kodo.
+- Ekskursija yra viena prekė. Datos yra `dates` masyvas toje pačioje prekėje, pasirenkamos prekės puslapyje, ne atskiros kortelės sąraše. Pirkimas toks pat kaip prekės, mygtukas „Registruotis“, kiekis yra vietos tam pačiam užsakymui. Dalyvių pavardžių ir dovanų srauto nėra. Jei krepšelyje tik ekskursijos, pristatymo mokesčio nėra. Bilietas kol kas yra užsakymo numeris, kurį gidas patikrina vietoje. PDF bilietai — vėlesnis etapas.
 
 ## Rekomenduojama rankoff seka
 
