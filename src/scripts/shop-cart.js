@@ -118,6 +118,21 @@ const focusableInCart = () => [...panel.querySelectorAll("a[href], button:not([d
 
 const sameLine = (item, slug, date = "") => item.slug === slug && String(item.date || "") === String(date || "");
 
+const cartNote = (items) => {
+  const hasExperience = items.some((item) => item.kind === "experience");
+  const hasGoods = items.some((item) => item.kind !== "experience");
+
+  if (hasExperience && hasGoods) {
+    return "Prekes pristatysime pasirinktu būdu. Ekskursijos patvirtinimą atsiųsime el. paštu.";
+  }
+
+  if (hasExperience) {
+    return "Ekskursijos patvirtinimą atsiųsime el. paštu. Kurjerio nereikia.";
+  }
+
+  return "Kainos su PVM. Pristatymą ir nuolaidą rasite atsiskaitydami.";
+};
+
 const lines = () => readCart()
   .map((item) => {
     const product = productFor(item.slug);
@@ -248,6 +263,11 @@ const paint = () => {
 
   footer.hidden = items.length === 0;
   footer.querySelector("[data-shop-cart-total]").textContent = money(total);
+  const note = footer.querySelector("[data-shop-cart-note]");
+
+  if (note) {
+    note.textContent = cartNote(items);
+  }
 };
 
 const update = (slug, nextQty, focus, date = "") => {
@@ -321,7 +341,7 @@ export const initShopCart = () => {
             <span>Viso</span>
             <strong data-shop-cart-total>0 €</strong>
           </div>
-          <p class="shop-cart__note">Kainos su PVM. Pristatymą ir nuolaidą rasite atsiskaitydami.</p>
+          <p class="shop-cart__note" data-shop-cart-note>Kainos su PVM. Pristatymą ir nuolaidą rasite atsiskaitydami.</p>
         </div>
         <div class="shop-cart__actions">
           <a class="shop-cart__pay" href="/el-parduotuve/atsiskaitymas/">Sumokėti</a>

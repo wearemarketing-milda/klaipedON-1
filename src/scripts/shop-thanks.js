@@ -73,9 +73,12 @@ export const initShopThanks = () => {
     title.textContent = firstName ? `Ačiū, ${firstName}` : "Ačiū";
   }
 
+  const hasExperience = order.hasExperience === true || Boolean(String(order.reference || "").trim());
+  const onlyTickets = Boolean(order.ticketsOnly);
+
   if (lead) {
-    lead.textContent = email
-      ? `Užsakymą gavome. Patvirtinimą atsiųstume į ${email}.`
+    lead.textContent = !onlyTickets && !hasExperience && email
+      ? `Užsakymą gavome. Patvirtinimą atsiųsime į ${email}.`
       : "Užsakymą gavome.";
   }
 
@@ -115,11 +118,16 @@ export const initShopThanks = () => {
   if (delivery) {
     const name = String(detail.name || "").trim();
     const address = String(detail.address || "").trim();
+    const deliverySection = root.querySelector("[data-thanks-delivery-section]");
     delivery.hidden = !name && !address;
     delivery.innerHTML = `
       ${name ? `<p class="thanks__place">${escapeHtml(name)}</p>` : ""}
       ${address ? `<p>${escapeHtml(address)}</p>` : ""}
     `;
+
+    if (deliverySection) {
+      deliverySection.hidden = onlyTickets || (!name && !address);
+    }
   }
 
   if (payment) {
@@ -135,8 +143,21 @@ export const initShopThanks = () => {
       : "";
   }
 
+  const experienceNote = root.querySelector("[data-thanks-experience]");
+  const experienceLine = email
+    ? `Ekskursijos patvirtinimą atsiųsime į ${email}.`
+    : "Ekskursijos patvirtinimą atsiųsime el. paštu.";
+
   if (next) {
-    next.hidden = Boolean(order.ticketsOnly);
+    next.hidden = onlyTickets;
+    next.textContent = hasExperience && !onlyTickets
+      ? `Siuntą paruošime ir pristatysime per 1–2 darbo dienas. ${experienceLine}`
+      : "Siuntą paruošime ir pristatysime per 1–2 darbo dienas.";
+  }
+
+  if (experienceNote) {
+    experienceNote.hidden = !onlyTickets;
+    experienceNote.textContent = experienceLine;
   }
 
   orderView.hidden = false;

@@ -208,9 +208,13 @@ export const initShopCheckout = () => {
       node.textContent = formatSummaryMoney(goods + shipping);
     });
 
+    const items = getCartLines();
     const onlyTickets = ticketsOnly();
+    const hasExperience = items.some((item) => item.kind === "experience");
     const deliverySection = root.querySelector("[data-checkout-delivery-section]");
     const shippingRow = root.querySelector("[data-checkout-shipping-row]");
+    const contactNote = root.querySelector("[data-checkout-contact-note]");
+    const experienceNote = root.querySelector("[data-checkout-experience-note]");
 
     if (deliverySection) {
       deliverySection.hidden = onlyTickets;
@@ -218,6 +222,20 @@ export const initShopCheckout = () => {
 
     if (shippingRow) {
       shippingRow.hidden = onlyTickets;
+    }
+
+    if (contactNote) {
+      contactNote.hidden = onlyTickets;
+      contactNote.textContent = hasExperience
+        ? "Sąskaitą atsiųsime šiuo el. paštu. Apie siuntą pranešime telefonu."
+        : "Sąskaitą ir patvirtinimą atsiųsime šiuo el. paštu. Apie siuntą pranešime telefonu.";
+    }
+
+    if (experienceNote) {
+      experienceNote.hidden = !hasExperience;
+      experienceNote.textContent = onlyTickets
+        ? "Ekskursijos patvirtinimą atsiųsime šiuo el. paštu. Kurjerio nereikia."
+        : "Ekskursijos patvirtinimą atsiųsime šiuo el. paštu.";
     }
   };
 
@@ -507,6 +525,7 @@ export const initShopCheckout = () => {
         date: item.dateLabel || "",
       })),
       ticketsOnly: onlyTickets,
+      hasExperience,
       reference: hasExperience ? `K${Date.now().toString(36).toUpperCase()}` : "",
       deliveryLabel: onlyTickets ? "" : (courier ? "Kurjeris į adresą" : "Omniva paštomatas"),
       deliveryPrice: shipping,
